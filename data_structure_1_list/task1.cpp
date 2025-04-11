@@ -3,6 +3,7 @@
 #include <malloc.h>
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm> // 用于 std::sort
 
 /*---------page 10 on textbook ---------*/
 #define TRUE 1
@@ -37,6 +38,11 @@ status NextElem(SqList L, ElemType cur, ElemType& next_e);
 status ListInsert(SqList& L, int i, ElemType e);
 status ListDelete(SqList& L, int i, ElemType& e);
 status ListTraverse(SqList L);
+status reverseList(SqList& L);
+status RemoveNthFromEnd(SqList& L, int n);
+status sortList(SqList& L);
+status SaveListToFile(SqList L, const char* filename);
+status LoadListFromFile(SqList& L, const char* filename);
 
 /*--------------------------------------------*/
 int main(void) {
@@ -53,9 +59,11 @@ int main(void) {
         printf("    	  4. ListEmpty     10. ListInsert\n");
         printf("    	  5. ListLength    11. ListDelete\n");
         printf("    	  6. GetElem       12. ListTraverse\n");
+        printf("    	  13. ReverseList  15. SortList\n");
+        printf("    	  14. RemoveNth    16. Save/Load\n");
         printf("    	  0. Exit\n");
         printf("-------------------------------------------------\n");
-        printf("    请选择你的操作[0~12]:");
+        printf("    请选择你的操作[0~16]:");
         scanf("%d", &op);
         switch (op) {
             case 1:
@@ -145,6 +153,46 @@ int main(void) {
                 else printf("遍历失败！\n");
                 getchar(); getchar();
                 break;
+            case 13: {
+                if (reverseList(L) == OK) printf("链表翻转成功！\n");
+                else printf("链表翻转失败！\n");
+                getchar(); getchar();
+                break;
+            }
+            case 14: {
+                int n;
+                printf("请输入要删除的倒数第 n 个节点：");
+                scanf("%d", &n);
+                if (RemoveNthFromEnd(L, n) == OK) printf("删除成功！\n");
+                else printf("删除失败！\n");
+                getchar(); getchar();
+                break;
+            }
+            case 15: {
+                if (sortList(L) == OK) printf("链表排序成功！\n");
+                else printf("链表排序失败！\n");
+                getchar(); getchar();
+                break;
+            }
+            case 16: {
+                char filename[100];
+                printf("请输入保存或加载的文件名：");
+                scanf("%s", filename);
+                int choice;
+                printf("1. 保存到文件\n2. 从文件加载\n请选择操作：");
+                scanf("%d", &choice);
+                if (choice == 1) {
+                    if (SaveListToFile(L, filename) == OK) printf("保存成功！\n");
+                    else printf("保存失败！\n");
+                } else if (choice == 2) {
+                    if (LoadListFromFile(L, filename) == OK) printf("加载成功！\n");
+                    else printf("加载失败！\n");
+                } else {
+                    printf("无效选择！\n");
+                }
+                getchar(); getchar();
+                break;
+            }
             case 0:
                 break;
         }
@@ -259,6 +307,57 @@ status ListTraverse(SqList L) {
         printf("%d ", L.elem[i]);
     }
     printf("\n");
+    return OK;
+}
+
+status reverseList(SqList& L) {
+    if (L.elem == NULL) return INFEASTABLE; // 线性表不存在
+    if (L.length <= 1) return OK;          // 长度为 0 或 1，无需翻转
+    for (int i = 0; i < L.length / 2; i++) {
+        ElemType temp = L.elem[i];
+        L.elem[i] = L.elem[L.length - 1 - i];
+        L.elem[L.length - 1 - i] = temp;
+    }
+    return OK;
+}
+
+status RemoveNthFromEnd(SqList& L, int n) {
+    if (L.elem == NULL) return INFEASTABLE; // 线性表不存在
+    if (n <= 0 || n > L.length) return ERROR; // n 不合法
+    int index = L.length - n; // 倒数第 n 个节点的索引
+    ElemType e; // 用于存储被删除的元素
+    return ListDelete(L, index + 1, e); // 调用已有的删除函数
+}
+
+status sortList(SqList& L) {
+    if (L.elem == NULL) return INFEASTABLE; // 线性表不存在
+    std::sort(L.elem, L.elem + L.length);  // 使用 std::sort 排序
+    return OK;
+}
+
+status SaveListToFile(SqList L, const char* filename) {
+    if (L.elem == NULL) return INFEASTABLE; // 线性表不存在
+    FILE* fp = fopen(filename, "wb");
+    if (fp == NULL) return ERROR; // 打开文件失败
+    fwrite(&L.length, sizeof(int), 1, fp); // 写入线性表长度
+    fwrite(L.elem, sizeof(ElemType), L.length, fp); // 写入线性表元素
+    fclose(fp);
+    return OK;
+}
+
+status LoadListFromFile(SqList& L, const char* filename) {
+    FILE* fp = fopen(filename, "rb");
+    if (fp == NULL) return ERROR; // 打开文件失败
+    if (L.elem != NULL) free(L.elem); // 如果线性表已存在，释放原有内存
+    fread(&L.length, sizeof(int), 1, fp); // 读取线性表长度
+    L.elem = (ElemType*)malloc(L.length * sizeof(ElemType)); // 分配内存
+    if (L.elem == NULL) {
+        fclose(fp);
+        return OVERFLOW; // 内存分配失败
+    }
+    fread(L.elem, sizeof(ElemType), L.length, fp); // 读取线性表元素
+    fclose(fp);
+    L.listsize = L.length; // 更新线性表容量
     return OK;
 }
 
