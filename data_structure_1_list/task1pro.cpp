@@ -232,6 +232,40 @@ status LoadListFromFile(SqList& L, const char* filename) {
     return OK;
 }
 
+// 添加线性表
+status AddList(LISTS& Lists, char ListName[]) {
+    if (Lists.length >= 10) return ERROR; // 超过最大线性表数量限制
+    strcpy(Lists.elem[Lists.length].name, ListName); // 设置线性表名称
+    if (InitList(Lists.elem[Lists.length].L) != OK) return ERROR; // 初始化线性表
+    Lists.length++; // 增加线性表数量
+    return OK;
+}
+
+// 移除线性表
+status RemoveList(LISTS& Lists, char ListName[]) {
+    for (int i = 0; i < Lists.length; i++) {
+        if (strcmp(Lists.elem[i].name, ListName) == 0) { // 找到匹配的线性表
+            DestroyList(Lists.elem[i].L); // 销毁线性表
+            for (int j = i; j < Lists.length - 1; j++) {
+                Lists.elem[j] = Lists.elem[j + 1]; // 移动后续线性表
+            }
+            Lists.length--; // 减少线性表数量
+            return OK;
+        }
+    }
+    return ERROR; // 未找到指定名称的线性表
+}
+
+// 查找线性表位置
+int LocateList(LISTS Lists, char ListName[]) {
+    for (int i = 0; i < Lists.length; i++) {
+        if (strcmp(Lists.elem[i].name, ListName) == 0) {
+            return i + 1; // 返回线性表的 1-based 索引
+        }
+    }
+    return 0; // 未找到
+}
+
 /*---------单个线性表操作菜单---------*/
 // 提供单个线性表的所有操作
 void SingleListMenu(SqList& L) {
