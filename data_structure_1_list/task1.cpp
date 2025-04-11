@@ -202,6 +202,7 @@ int main(void) {
 }
 
 /* Function implementations */
+// 初始化线性表
 status InitList(SqList& L) {
     if (L.elem) return INFEASTABLE;
     L.elem = (ElemType*)malloc(LIST_INIT_SIZE * sizeof(ElemType));
@@ -211,6 +212,7 @@ status InitList(SqList& L) {
     return OK;
 }
 
+// 销毁线性表
 status DestroyList(SqList& L) {
     if (!L.elem) return INFEASTABLE;
     free(L.elem);
@@ -220,22 +222,26 @@ status DestroyList(SqList& L) {
     return OK;
 }
 
+// 清空线性表
 status ClearList(SqList& L) {
     if (!L.elem) return INFEASTABLE;
     L.length = 0;
     return OK;
 }
 
+// 判断线性表是否为空
 status ListEmpty(SqList L) {
     if (!L.elem) return INFEASTABLE;
     return L.length == 0 ? OK : ERROR;
 }
 
+// 获取线性表长度
 int ListLength(SqList L) {
     if (!L.elem) return INFEASTABLE;
     return L.length;
 }
 
+// 获取线性表中第 i 个元素
 status GetElem(SqList L, int i, ElemType& e) {
     if (!L.elem) return INFEASTABLE;
     if (i < 1 || i > L.length) return ERROR;
@@ -243,6 +249,7 @@ status GetElem(SqList L, int i, ElemType& e) {
     return OK;
 }
 
+// 查找元素 e 的位置
 status LocateElem(SqList L, ElemType e) {
     if (!L.elem) return INFEASTABLE;
     for (int i = 0; i < L.length; i++) {
@@ -251,6 +258,7 @@ status LocateElem(SqList L, ElemType e) {
     return ERROR;
 }
 
+// 获取元素的前驱
 status PriorElem(SqList L, ElemType cur, ElemType& pre_e) {
     if (!L.elem) return INFEASTABLE;
     for (int i = 1; i < L.length; i++) {
@@ -262,6 +270,7 @@ status PriorElem(SqList L, ElemType cur, ElemType& pre_e) {
     return ERROR;
 }
 
+// 获取元素的后继
 status NextElem(SqList L, ElemType cur, ElemType& next_e) {
     if (!L.elem) return INFEASTABLE;
     for (int i = 0; i < L.length - 1; i++) {
@@ -273,6 +282,7 @@ status NextElem(SqList L, ElemType cur, ElemType& next_e) {
     return ERROR;
 }
 
+// 在第 i 个位置插入元素
 status ListInsert(SqList& L, int i, ElemType e) {
     if (!L.elem) return INFEASTABLE;
     if (i < 1 || i > L.length + 1) return ERROR;
@@ -290,6 +300,7 @@ status ListInsert(SqList& L, int i, ElemType e) {
     return OK;
 }
 
+// 删除第 i 个位置的元素
 status ListDelete(SqList& L, int i, ElemType& e) {
     if (!L.elem) return INFEASTABLE;
     if (i < 1 || i > L.length) return ERROR;
@@ -301,6 +312,7 @@ status ListDelete(SqList& L, int i, ElemType& e) {
     return OK;
 }
 
+// 遍历线性表
 status ListTraverse(SqList L) {
     if (!L.elem) return INFEASTABLE;
     for (int i = 0; i < L.length; i++) {
@@ -310,9 +322,10 @@ status ListTraverse(SqList L) {
     return OK;
 }
 
+// 翻转线性表
 status reverseList(SqList& L) {
-    if (L.elem == NULL) return INFEASTABLE; // 线性表不存在
-    if (L.length <= 1) return OK;          // 长度为 0 或 1，无需翻转
+    if (L.elem == NULL) return INFEASTABLE;
+    if (L.length <= 1) return OK;
     for (int i = 0; i < L.length / 2; i++) {
         ElemType temp = L.elem[i];
         L.elem[i] = L.elem[L.length - 1 - i];
@@ -321,43 +334,47 @@ status reverseList(SqList& L) {
     return OK;
 }
 
+// 删除倒数第 n 个元素
 status RemoveNthFromEnd(SqList& L, int n) {
-    if (L.elem == NULL) return INFEASTABLE; // 线性表不存在
-    if (n <= 0 || n > L.length) return ERROR; // n 不合法
-    int index = L.length - n; // 倒数第 n 个节点的索引
-    ElemType e; // 用于存储被删除的元素
-    return ListDelete(L, index + 1, e); // 调用已有的删除函数
+    if (L.elem == NULL) return INFEASTABLE;
+    if (n <= 0 || n > L.length) return ERROR;
+    int index = L.length - n;
+    ElemType e;
+    return ListDelete(L, index + 1, e);
 }
 
+// 对线性表排序
 status sortList(SqList& L) {
-    if (L.elem == NULL) return INFEASTABLE; // 线性表不存在
-    std::sort(L.elem, L.elem + L.length);  // 使用 std::sort 排序
+    if (L.elem == NULL) return INFEASTABLE;
+    std::sort(L.elem, L.elem + L.length);
     return OK;
 }
 
+// 保存线性表到文件
 status SaveListToFile(SqList L, const char* filename) {
-    if (L.elem == NULL) return INFEASTABLE; // 线性表不存在
+    if (L.elem == NULL) return INFEASTABLE;
     FILE* fp = fopen(filename, "wb");
-    if (fp == NULL) return ERROR; // 打开文件失败
-    fwrite(&L.length, sizeof(int), 1, fp); // 写入线性表长度
-    fwrite(L.elem, sizeof(ElemType), L.length, fp); // 写入线性表元素
+    if (fp == NULL) return ERROR;
+    fwrite(&L.length, sizeof(int), 1, fp);
+    fwrite(L.elem, sizeof(ElemType), L.length, fp);
     fclose(fp);
     return OK;
 }
 
+// 从文件加载线性表
 status LoadListFromFile(SqList& L, const char* filename) {
     FILE* fp = fopen(filename, "rb");
-    if (fp == NULL) return ERROR; // 打开文件失败
-    if (L.elem != NULL) free(L.elem); // 如果线性表已存在，释放原有内存
-    fread(&L.length, sizeof(int), 1, fp); // 读取线性表长度
-    L.elem = (ElemType*)malloc(L.length * sizeof(ElemType)); // 分配内存
+    if (fp == NULL) return ERROR;
+    if (L.elem != NULL) free(L.elem);
+    fread(&L.length, sizeof(int), 1, fp);
+    L.elem = (ElemType*)malloc(L.length * sizeof(ElemType));
     if (L.elem == NULL) {
         fclose(fp);
-        return OVERFLOW; // 内存分配失败
+        return OVERFLOW;
     }
-    fread(L.elem, sizeof(ElemType), L.length, fp); // 读取线性表元素
+    fread(L.elem, sizeof(ElemType), L.length, fp);
     fclose(fp);
-    L.listsize = L.length; // 更新线性表容量
+    L.listsize = L.length;
     return OK;
 }
 

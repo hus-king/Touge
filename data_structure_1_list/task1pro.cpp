@@ -14,45 +14,50 @@
 typedef int status;
 typedef int ElemType; // 数据元素类型定义
 
-#define LIST_INIT_SIZE 100
-#define LISTINCREMENT  10
+#define LIST_INIT_SIZE 100 // 初始分配空间大小
+#define LISTINCREMENT  10  // 增量分配空间大小
 
-typedef struct {  // 顺序表（顺序结构）的定义
-    ElemType* elem;
-    int length;
-    int listsize;
+// 顺序表（顺序结构）的定义
+typedef struct {
+    ElemType* elem; // 数据元素存储空间的基址
+    int length;     // 当前长度
+    int listsize;   // 当前分配的存储容量
 } SqList;
 
-typedef struct {  // 线性表的管理表定义
-    struct { char name[30];
-        SqList L;    
-    } elem[10];
-    int length;
+// 线性表的管理表定义
+typedef struct {
+    struct {
+        char name[30]; // 线性表名称
+        SqList L;      // 线性表
+    } elem[10];        // 最多管理 10 个线性表
+    int length;        // 当前管理的线性表数量
 } LISTS;
 
 /*---------函数声明---------*/
-status InitList(SqList& L);
-status DestroyList(SqList& L);
-status ClearList(SqList& L);
-status ListEmpty(SqList L);
-int ListLength(SqList L);
-status GetElem(SqList L, int i, ElemType& e);
-status LocateElem(SqList L, ElemType e);
-status PriorElem(SqList L, ElemType cur, ElemType& pre_e);
-status NextElem(SqList L, ElemType cur, ElemType& next_e);
-status ListInsert(SqList& L, int i, ElemType e);
-status ListDelete(SqList& L, int i, ElemType& e);
-status ListTraverse(SqList L);
-status reverseList(SqList& L);
-status RemoveNthFromEnd(SqList& L, int n);
-status sortList(SqList& L);
-status SaveListToFile(SqList L, const char* filename);
-status LoadListFromFile(SqList& L, const char* filename);
-status AddList(LISTS& Lists, char ListName[]);
-status RemoveList(LISTS& Lists, char ListName[]);
-int LocateList(LISTS Lists, char ListName[]);
+status InitList(SqList& L); // 初始化线性表
+status DestroyList(SqList& L); // 销毁线性表
+status ClearList(SqList& L); // 清空线性表
+status ListEmpty(SqList L); // 判断线性表是否为空
+int ListLength(SqList L); // 获取线性表长度
+status GetElem(SqList L, int i, ElemType& e); // 获取线性表中第 i 个元素
+status LocateElem(SqList L, ElemType e); // 查找元素 e 的位置
+status PriorElem(SqList L, ElemType cur, ElemType& pre_e); // 获取元素的前驱
+status NextElem(SqList L, ElemType cur, ElemType& next_e); // 获取元素的后继
+status ListInsert(SqList& L, int i, ElemType e); // 在第 i 个位置插入元素
+status ListDelete(SqList& L, int i, ElemType& e); // 删除第 i 个位置的元素
+status ListTraverse(SqList L); // 遍历线性表
+status reverseList(SqList& L); // 翻转线性表
+status RemoveNthFromEnd(SqList& L, int n); // 删除倒数第 n 个元素
+status sortList(SqList& L); // 对线性表排序
+status SaveListToFile(SqList L, const char* filename); // 保存线性表到文件
+status LoadListFromFile(SqList& L, const char* filename); // 从文件加载线性表
+status AddList(LISTS& Lists, char ListName[]); // 添加线性表
+status RemoveList(LISTS& Lists, char ListName[]); // 移除线性表
+int LocateList(LISTS Lists, char ListName[]); // 查找线性表位置
 
 /*---------函数实现---------*/
+
+// 初始化线性表
 status InitList(SqList& L) {
     if (L.elem) return INFEASIBLE;
     L.elem = (ElemType*)malloc(LIST_INIT_SIZE * sizeof(ElemType));
@@ -62,6 +67,7 @@ status InitList(SqList& L) {
     return OK;
 }
 
+// 销毁线性表
 status DestroyList(SqList& L) {
     if (!L.elem) return INFEASIBLE;
     free(L.elem);
@@ -71,22 +77,26 @@ status DestroyList(SqList& L) {
     return OK;
 }
 
+// 清空线性表
 status ClearList(SqList& L) {
     if (!L.elem) return INFEASIBLE;
     L.length = 0;
     return OK;
 }
 
+// 判断线性表是否为空
 status ListEmpty(SqList L) {
     if (!L.elem) return INFEASIBLE;
     return L.length == 0 ? OK : ERROR;
 }
 
+// 获取线性表长度
 int ListLength(SqList L) {
     if (!L.elem) return INFEASIBLE;
     return L.length;
 }
 
+// 获取线性表中第 i 个元素
 status GetElem(SqList L, int i, ElemType& e) {
     if (!L.elem) return INFEASIBLE;
     if (i < 1 || i > L.length) return ERROR;
@@ -94,6 +104,7 @@ status GetElem(SqList L, int i, ElemType& e) {
     return OK;
 }
 
+// 查找元素 e 的位置
 status LocateElem(SqList L, ElemType e) {
     if (!L.elem) return INFEASIBLE;
     for (int i = 0; i < L.length; i++) {
@@ -102,6 +113,7 @@ status LocateElem(SqList L, ElemType e) {
     return ERROR;
 }
 
+// 获取元素的前驱
 status PriorElem(SqList L, ElemType cur, ElemType& pre_e) {
     if (!L.elem) return INFEASIBLE;
     for (int i = 1; i < L.length; i++) {
@@ -113,6 +125,7 @@ status PriorElem(SqList L, ElemType cur, ElemType& pre_e) {
     return ERROR;
 }
 
+// 获取元素的后继
 status NextElem(SqList L, ElemType cur, ElemType& next_e) {
     if (!L.elem) return INFEASIBLE;
     for (int i = 0; i < L.length - 1; i++) {
@@ -124,6 +137,7 @@ status NextElem(SqList L, ElemType cur, ElemType& next_e) {
     return ERROR;
 }
 
+// 在第 i 个位置插入元素
 status ListInsert(SqList& L, int i, ElemType e) {
     if (!L.elem) return INFEASIBLE;
     if (i < 1 || i > L.length + 1) return ERROR;
@@ -141,6 +155,7 @@ status ListInsert(SqList& L, int i, ElemType e) {
     return OK;
 }
 
+// 删除第 i 个位置的元素
 status ListDelete(SqList& L, int i, ElemType& e) {
     if (!L.elem) return INFEASIBLE;
     if (i < 1 || i > L.length) return ERROR;
@@ -152,6 +167,7 @@ status ListDelete(SqList& L, int i, ElemType& e) {
     return OK;
 }
 
+// 遍历线性表
 status ListTraverse(SqList L) {
     if (!L.elem) return INFEASIBLE;
     for (int i = 0; i < L.length; i++) {
@@ -161,9 +177,9 @@ status ListTraverse(SqList L) {
     return OK;
 }
 
+// 翻转线性表
 status reverseList(SqList& L) {
-    if (L.elem == NULL) return INFEASIBLE; // 线性表不存在
-    if (L.length <= 1) return OK;          // 长度为 0 或 1，无需翻转
+    if (!L.elem) return INFEASIBLE;
     for (int i = 0; i < L.length / 2; i++) {
         ElemType temp = L.elem[i];
         L.elem[i] = L.elem[L.length - 1 - i];
@@ -172,98 +188,68 @@ status reverseList(SqList& L) {
     return OK;
 }
 
+// 删除倒数第 n 个元素
 status RemoveNthFromEnd(SqList& L, int n) {
-    if (L.elem == NULL) return INFEASIBLE; // 线性表不存在
-    if (n <= 0 || n > L.length) return ERROR; // n 不合法
-    int index = L.length - n; // 倒数第 n 个节点的索引
-    ElemType e; // 用于存储被删除的元素
-    return ListDelete(L, index + 1, e); // 调用已有的删除函数
+    if (!L.elem) return INFEASIBLE;
+    if (n <= 0 || n > L.length) return ERROR;
+    int index = L.length - n;
+    ElemType e;
+    return ListDelete(L, index + 1, e);
 }
 
+// 对线性表排序
 status sortList(SqList& L) {
-    if (L.elem == NULL) return INFEASIBLE; // 线性表不存在
-    std::sort(L.elem, L.elem + L.length);  // 使用 std::sort 排序
+    if (!L.elem) return INFEASIBLE;
+    std::sort(L.elem, L.elem + L.length);
     return OK;
 }
 
+// 保存线性表到文件
 status SaveListToFile(SqList L, const char* filename) {
-    if (L.elem == NULL) return INFEASIBLE; // 线性表不存在
+    if (!L.elem) return INFEASIBLE;
     FILE* fp = fopen(filename, "wb");
-    if (fp == NULL) return ERROR; // 打开文件失败
-    fwrite(&L.length, sizeof(int), 1, fp); // 写入线性表长度
-    fwrite(L.elem, sizeof(ElemType), L.length, fp); // 写入线性表元素
+    if (!fp) return ERROR;
+    fwrite(&L.length, sizeof(int), 1, fp);
+    fwrite(L.elem, sizeof(ElemType), L.length, fp);
     fclose(fp);
     return OK;
 }
 
+// 从文件加载线性表
 status LoadListFromFile(SqList& L, const char* filename) {
     FILE* fp = fopen(filename, "rb");
-    if (fp == NULL) return ERROR; // 打开文件失败
-    if (L.elem != NULL) free(L.elem); // 如果线性表已存在，释放原有内存
-    fread(&L.length, sizeof(int), 1, fp); // 读取线性表长度
-    L.elem = (ElemType*)malloc(L.length * sizeof(ElemType)); // 分配内存
-    if (L.elem == NULL) {
+    if (!fp) return ERROR;
+    if (L.elem) free(L.elem);
+    fread(&L.length, sizeof(int), 1, fp);
+    L.elem = (ElemType*)malloc(L.length * sizeof(ElemType));
+    if (!L.elem) {
         fclose(fp);
-        return OVERFLOW; // 内存分配失败
+        return OVERFLOW;
     }
-    fread(L.elem, sizeof(ElemType), L.length, fp); // 读取线性表元素
+    fread(L.elem, sizeof(ElemType), L.length, fp);
     fclose(fp);
-    L.listsize = L.length; // 更新线性表容量
+    L.listsize = L.length;
     return OK;
-}
-
-status AddList(LISTS& Lists, char ListName[]) {
-    if (Lists.length >= 10) return OVERFLOW; // 超过最大线性表数量
-    for (int i = 0; i < Lists.length; i++) {
-        if (strcmp(Lists.elem[i].name, ListName) == 0) return ERROR; // 名称重复
-    }
-    strcpy(Lists.elem[Lists.length].name, ListName);
-    if (InitList(Lists.elem[Lists.length].L) != OK) return ERROR; // 初始化失败
-    Lists.length++;
-    return OK;
-}
-
-status RemoveList(LISTS& Lists, char ListName[]) {
-    int pos = -1;
-    for (int i = 0; i < Lists.length; i++) {
-        if (strcmp(Lists.elem[i].name, ListName) == 0) {
-            pos = i;
-            break;
-        }
-    }
-    if (pos == -1) return ERROR; // 未找到
-    DestroyList(Lists.elem[pos].L);
-    for (int i = pos; i < Lists.length - 1; i++) {
-        Lists.elem[i] = Lists.elem[i + 1];
-    }
-    Lists.length--;
-    return OK;
-}
-
-int LocateList(LISTS Lists, char ListName[]) {
-    for (int i = 0; i < Lists.length; i++) {
-        if (strcmp(Lists.elem[i].name, ListName) == 0) return i + 1;
-    }
-    return 0; // 未找到
 }
 
 /*---------单个线性表操作菜单---------*/
+// 提供单个线性表的所有操作
 void SingleListMenu(SqList& L) {
     int op = 1;
     while (op) {
         system("cls");
         printf("\n\n");
-        printf("      Menu for Linear Table On Sequence Structure \n");
+        printf("      单个线性表操作菜单 \n");
         printf("-------------------------------------------------\n");
-        printf("    	  1. InitList       9. NextElem\n");
-        printf("    	  2. DestroyList   10. ListInsert\n");
-        printf("    	  3. ClearList     11. ListDelete\n");
-        printf("    	  4. ListEmpty     12. ListTraverse\n");
-        printf("    	  5. ListLength    13. ReverseList\n");
-        printf("    	  6. GetElem       14. RemoveNth\n");
-        printf("    	  7. LocateElem    15. SortList\n");
-        printf("    	  8. PriorElem     16. Save/Load\n");
-        printf("    	  0. Exit\n");
+        printf("    	  1. 初始化线性表       9. 获取元素后继\n");
+        printf("    	  2. 销毁线性表       10. 插入元素\n");
+        printf("    	  3. 清空线性表       11. 删除元素\n");
+        printf("    	  4. 判断线性表是否为空 12. 遍历线性表\n");
+        printf("    	  5. 获取线性表长度   13. 翻转线性表\n");
+        printf("    	  6. 获取指定元素     14. 删除倒数第 n 个元素\n");
+        printf("    	  7. 查找元素位置     15. 对线性表排序\n");
+        printf("    	  8. 获取元素前驱     16. 保存/加载线性表\n");
+        printf("    	  0. 退出\n");
         printf("-------------------------------------------------\n");
         printf("    请选择你的操作[0~16]:");
         scanf("%d", &op);
@@ -400,19 +386,20 @@ void SingleListMenu(SqList& L) {
 }
 
 /*---------主函数---------*/
+// 提供多个线性表的管理功能
 int main() {
     LISTS Lists;
-    Lists.length = 0;
+    Lists.length = 0; // 初始化线性表管理器
     int op = 1;
 
     while (op) {
         system("cls");
         printf("\n\n");
-        printf("      Menu for Multiple Linear Table Management \n");
+        printf("      多个线性表管理菜单 \n");
         printf("-------------------------------------------------\n");
-        printf("    	  1. AddList       4. ShowLists\n");
-        printf("    	  2. RemoveList    5. OperateSingleList\n");
-        printf("    	  3. LocateList    0. Exit\n");
+        printf("    	  1. 添加线性表       4. 显示所有线性表\n");
+        printf("    	  2. 移除线性表       5. 操作单个线性表\n");
+        printf("    	  3. 查找线性表       0. 退出\n");
         printf("-------------------------------------------------\n");
         printf("    请选择你的操作[0~5]:");
         scanf("%d", &op);
