@@ -14,6 +14,7 @@ status LoadList(SqList &L,char FileName[])
 {
     FILE *fp;
     if ((fp=fopen(FileName,"r"))==NULL) return ERROR; //打开文件失败
+    if(L.elem) return INFEASIBLE; //线性表已经存在，不能重复初始化
     L.elem=(ElemType *)malloc(LIST_INIT_SIZE*sizeof(ElemType)); //申请空间
     if (!L.elem) return OVERFLOW; //申请失败
     L.listsize=LIST_INIT_SIZE; //设置线性表的空间容量初值

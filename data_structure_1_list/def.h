@@ -18,3 +18,10 @@ typedef struct{  //顺序表（顺序结构）的定义
 	      int length;
 	      int listsize;
          }SqList;
+typedef struct{  //线性表的管理表定义
+	struct { char name[30];
+			SqList L;	
+	} elem[10];
+	int length;
+	int listsize;
+}LISTS;

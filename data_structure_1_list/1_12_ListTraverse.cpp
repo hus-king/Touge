@@ -4,7 +4,8 @@ status ListTraverse(SqList L) //遍历线性表
     if (L.elem==NULL) return INFEASIBLE; //线性表不存在，不能遍历
     if (L.length==0) return OK; //线性表为空，遍历成功
     for (int i=0;i<L.length;i++)
-        printf("%d ",L.elem[i]); //输出线性表的元素
+		if(i==L.length-1) printf("%d",L.elem[i]); //输出线性表的最后一个元素
+		else  printf("%d ",L.elem[i]); //输出线性表的元素
     return OK; //遍历成功
 }
 int main() {

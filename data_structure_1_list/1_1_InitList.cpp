@@ -1,5 +1,13 @@
 #include "def.h"
-status InitList(SqList &L); //初始化线性表
+status InitList(SqList &L)//初始化线性表
+{
+    if(L.elem) return INFEASIBLE; //线性表已经存在，不能重复初始化
+    L.elem=(ElemType *)malloc(LIST_INIT_SIZE*sizeof(ElemType)); //申请空间
+    L.listsize=LIST_INIT_SIZE; //设置线性表的空间容量初值
+    L.length=0; //设置元素个数初始值
+    if (!L.elem) return INFEASIBLE; //申请失败
+    else return OK; //申请成功
+}
 int main()
 {
 SqList L;
@@ -30,12 +38,4 @@ else
      free(L.elem);
      }
 return 1;
-}
-status InitList(SqList &L){
-    if(L.elem) return INFEASIBLE; //线性表已经存在，不能重复初始化
-    L.elem=(ElemType *)malloc(LIST_INIT_SIZE*sizeof(ElemType)); //申请空间
-    L.listsize=LIST_INIT_SIZE; //设置线性表的空间容量初值
-    L.length=0; //设置元素个数初始值
-    if (!L.elem) return INFEASIBLE; //申请失败
-    else return OK; //申请成功
 }
