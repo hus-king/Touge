@@ -1,11 +1,11 @@
-/* Linear Table On Sequence Structure */
+/* 线性表顺序结构操作系统 */
 #include <stdio.h>
 #include <malloc.h>
 #include <stdlib.h>
 #include <string.h>
 #include <algorithm> // 用于 std::sort
 
-/*---------page 10 on textbook ---------*/
+/*---------常量定义---------*/
 #define TRUE 1
 #define FALSE 0
 #define OK 1
@@ -14,35 +14,35 @@
 #define OVERFLOW -2
 
 typedef int status; 
-typedef int ElemType; //数据元素类型定义
+typedef int ElemType; // 数据元素类型定义
 
-/*-------page 22 on textbook -------*/
-#define LIST_INIT_SIZE 100
-#define LISTINCREMENT  10
-typedef struct{  //顺序表（顺序结构）的定义
-    ElemType * elem;
-    int length;
-    int listsize;
-}SqList;
+/*---------线性表结构定义---------*/
+#define LIST_INIT_SIZE 100 // 初始分配空间大小
+#define LISTINCREMENT  10  // 增量分配空间大小
+typedef struct {  // 顺序表（顺序结构）的定义
+    ElemType * elem; // 数据元素存储空间的基址
+    int length;      // 当前长度
+    int listsize;    // 当前分配的存储容量
+} SqList;
 
-/* Function declarations */
-status InitList(SqList& L);
-status DestroyList(SqList& L);
-status ClearList(SqList& L);
-status ListEmpty(SqList L);
-int ListLength(SqList L);
-status GetElem(SqList L, int i, ElemType& e);
-status LocateElem(SqList L, ElemType e);
-status PriorElem(SqList L, ElemType cur, ElemType& pre_e);
-status NextElem(SqList L, ElemType cur, ElemType& next_e);
-status ListInsert(SqList& L, int i, ElemType e);
-status ListDelete(SqList& L, int i, ElemType& e);
-status ListTraverse(SqList L);
-status reverseList(SqList& L);
-status RemoveNthFromEnd(SqList& L, int n);
-status sortList(SqList& L);
-status SaveListToFile(SqList L, const char* filename);
-status LoadListFromFile(SqList& L, const char* filename);
+/*---------函数声明---------*/
+status InitList(SqList& L); // 初始化线性表
+status DestroyList(SqList& L); // 销毁线性表
+status ClearList(SqList& L); // 清空线性表
+status ListEmpty(SqList L); // 判断线性表是否为空
+int ListLength(SqList L); // 获取线性表长度
+status GetElem(SqList L, int i, ElemType& e); // 获取线性表中第i个元素
+status LocateElem(SqList L, ElemType e); // 查找元素e的位置
+status PriorElem(SqList L, ElemType cur, ElemType& pre_e); // 获取元素的前驱
+status NextElem(SqList L, ElemType cur, ElemType& next_e); // 获取元素的后继
+status ListInsert(SqList& L, int i, ElemType e); // 在第i个位置插入元素
+status ListDelete(SqList& L, int i, ElemType& e); // 删除第i个位置的元素
+status ListTraverse(SqList L); // 遍历线性表
+status reverseList(SqList& L); // 翻转线性表
+status RemoveNthFromEnd(SqList& L, int n); // 删除倒数第n个元素
+status sortList(SqList& L); // 对线性表排序
+status SaveListToFile(SqList L, const char* filename); // 保存线性表到文件
+status LoadListFromFile(SqList& L, const char* filename); // 从文件加载线性表
 
 /*--------------------------------------------*/
 int main(void) {
@@ -51,17 +51,17 @@ int main(void) {
     while (op) {
         system("cls");
         printf("\n\n");
-        printf("      Menu for Linear Table On Sequence Structure \n");
+        printf("      线性表顺序结构操作菜单 \n");
         printf("-------------------------------------------------\n");
-        printf("    	  1. InitList       9. NextElem\n");
-        printf("    	  2. DestroyList   10. ListInsert\n");
-        printf("    	  3. ClearList     11. ListDelete\n");
-        printf("    	  4. ListEmpty     12. ListTraverse\n");
-        printf("    	  5. ListLength    13. ReverseList\n");
-        printf("    	  6. GetElem       14. RemoveNth\n");
-        printf("    	  7. LocateElem    15. SortList\n");
-        printf("    	  8. PriorElem     16. Save/Load\n");
-        printf("    	  0. Exit\n");
+        printf("    	  1. 初始化线性表       9. 获取元素后继\n");
+        printf("    	  2. 销毁线性表       10. 插入元素\n");
+        printf("    	  3. 清空线性表       11. 删除元素\n");
+        printf("    	  4. 判断线性表是否为空 12. 遍历线性表\n");
+        printf("    	  5. 获取线性表长度   13. 翻转线性表\n");
+        printf("    	  6. 获取指定元素     14. 删除倒数第n个元素\n");
+        printf("    	  7. 查找元素位置     15. 对线性表排序\n");
+        printf("    	  8. 获取元素前驱     16. 保存/加载线性表\n");
+        printf("    	  0. 退出\n");
         printf("-------------------------------------------------\n");
         printf("    请选择你的操作[0~16]:");
         scanf("%d", &op);
