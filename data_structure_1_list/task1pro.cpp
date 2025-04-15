@@ -495,7 +495,7 @@ int main() {
                 scanf("%s", name);
                 int pos = LocateList(Lists, name);
                 if (pos > 0) printf("线性表 '%s' 的位置为：%d\n", name, pos);
-                else printf("未找到线性表 '%s'！\n");
+                else printf("未找到线性表 '%s'！\n",name);
                 getchar(); getchar();
                 break;
             }
@@ -520,9 +520,9 @@ int main() {
                     printf("已切换到线性表 '%s'！\n", name);
                     SingleListMenu(Lists.elem[pos - 1].L);
                 } else {
-                    printf("未找到线性表 '%s'！\n");
+                    printf("未找到线性表 '%s'！\n",name);
                 }
-                getchar(); getchar();
+                getchar();
                 break;
             }
             case 0:
