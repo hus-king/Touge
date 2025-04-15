@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <algorithm> // 用于 std::sort
+#include <unordered_map> // 用于 std::unordered_map
 
 /*---------定义常量和类型---------*/
 #define TRUE 1
@@ -54,6 +55,8 @@ status LoadListFromFile(SqList& L, const char* filename); // 从文件加载线性表
 status AddList(LISTS& Lists, char ListName[]); // 添加线性表
 status RemoveList(LISTS& Lists, char ListName[]); // 移除线性表
 int LocateList(LISTS Lists, char ListName[]); // 查找线性表位置
+status MaxSubArray(SqList L); // 最大连续子数组和
+status SubArrayNum(SqList L, int k); // 和为K的子数组
 
 /*---------函数实现---------*/
 
@@ -266,6 +269,35 @@ int LocateList(LISTS Lists, char ListName[]) {
     return 0; // 未找到
 }
 
+// 最大连续子数组和
+status MaxSubArray(SqList L) {
+    if (!L.elem) return INFEASIBLE;
+    int maxSum = L.elem[0], currentSum = L.elem[0];
+    for (int i = 1; i < L.length; i++) {
+        currentSum = std::max(L.elem[i], currentSum + L.elem[i]);
+        maxSum = std::max(maxSum, currentSum);
+    }
+    printf("最大连续子数组和为：%d\n", maxSum);
+    return OK;
+}
+
+// 和为K的子数组
+status SubArrayNum(SqList L, int k) {
+    if (!L.elem) return INFEASIBLE;
+    int count = 0, sum = 0;
+    std::unordered_map<int, int> prefixSum;
+    prefixSum[0] = 1; // 初始化前缀和为0的情况
+    for (int i = 0; i < L.length; i++) {
+        sum += L.elem[i];
+        if (prefixSum.find(sum - k) != prefixSum.end()) {
+            count += prefixSum[sum - k];
+        }
+        prefixSum[sum]++;
+    }
+    printf("和为%d的子数组个数为：%d\n", k, count);
+    return OK;
+}
+
 /*---------单个线性表操作菜单---------*/
 // 提供单个线性表的所有操作
 void SingleListMenu(SqList& L) {
@@ -279,8 +311,8 @@ void SingleListMenu(SqList& L) {
         printf("    	  2. 销毁线性表       10. 插入元素\n");
         printf("    	  3. 清空线性表       11. 删除元素\n");
         printf("    	  4. 判断线性表是否为空 12. 遍历线性表\n");
-        printf("    	  5. 获取线性表长度   13. 翻转线性表\n");
-        printf("    	  6. 获取指定元素     14. 删除倒数第 n 个元素\n");
+        printf("    	  5. 获取线性表长度   13. 最大连续子数组和\n");
+        printf("    	  6. 获取指定元素     14. 和为K的子数组\n");
         printf("    	  7. 查找元素位置     15. 对线性表排序\n");
         printf("    	  8. 获取元素前驱     16. 保存/加载线性表\n");
         printf("    	  0. 退出\n");
@@ -376,16 +408,16 @@ void SingleListMenu(SqList& L) {
                 getchar(); getchar();
                 break;
             case 13:
-                if (reverseList(L) == OK) printf("链表翻转成功！\n");
-                else printf("链表翻转失败！\n");
+                if (MaxSubArray(L) == OK) printf("操作成功！\n");
+                else printf("操作失败！\n");
                 getchar(); getchar();
                 break;
             case 14: {
-                int n;
-                printf("请输入要删除的倒数第 n 个节点：");
-                scanf("%d", &n);
-                if (RemoveNthFromEnd(L, n) == OK) printf("删除成功！\n");
-                else printf("删除失败！\n");
+                int k;
+                printf("请输入目标和K：");
+                scanf("%d", &k);
+                if (SubArrayNum(L, k) == OK) printf("操作成功！\n");
+                else printf("操作失败！\n");
                 getchar(); getchar();
                 break;
             }
