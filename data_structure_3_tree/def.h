@@ -1,6 +1,7 @@
 #include "stdio.h"
 #include "stdlib.h"
-
+#include "string.h"
+#include <cstring>
 #define TRUE 1
 	#define FALSE 0
 	#define OK 1
