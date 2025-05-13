@@ -28,6 +28,14 @@ status CreateBiTree(BiTree &T, TElemType definition[])
     if (CreateBiTree(T->rchild, definition) == ERROR) return ERROR;
     return OK;
 }
+void DestroyBiTree(BiTree &T) {
+    if (T) {
+        DestroyBiTree(T->lchild);
+        DestroyBiTree(T->rchild);
+        free(T);
+        T = NULL;
+    }
+}
 status ClearBiTree(BiTree &T)
 {
     if (T) {

@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <algorithm> // ÓÃÓÚ std::sort
-#include <unordered_map> // ÓÃÓÚ std::unordered_map
+#include <algorithm> // ç”¨äº std::sort
+#include <unordered_map> // ç”¨äº std::unordered_map
 
-/*---------¶¨Òå³£Á¿ºÍÀàĞÍ---------*/
+/*---------å®šä¹‰å¸¸é‡å’Œç±»å‹---------*/
 #define TRUE 1
 #define FALSE 0
 #define OK 1
@@ -13,54 +13,54 @@
 #define OVERFLOW -2
 
 typedef int status;
-typedef int ElemType; // Êı¾İÔªËØÀàĞÍ¶¨Òå
+typedef int ElemType; // æ•°æ®å…ƒç´ ç±»å‹å®šä¹‰
 
-#define LIST_INIT_SIZE 100 // ³õÊ¼·ÖÅä¿Õ¼ä´óĞ¡
-#define LISTINCREMENT  10  // ÔöÁ¿·ÖÅä¿Õ¼ä´óĞ¡
+#define LIST_INIT_SIZE 100 // åˆå§‹åˆ†é…ç©ºé—´å¤§å°
+#define LISTINCREMENT  10  // å¢é‡åˆ†é…ç©ºé—´å¤§å°
 
-// Ë³Ğò±í£¨Ë³Ğò½á¹¹£©µÄ¶¨Òå
+// é¡ºåºè¡¨ï¼ˆé¡ºåºç»“æ„ï¼‰çš„å®šä¹‰
 typedef struct {
-    ElemType* elem = NULL; // Êı¾İÔªËØ´æ´¢¿Õ¼äµÄ»ùÖ·
-    int length;     // µ±Ç°³¤¶È
-    int listsize;   // µ±Ç°·ÖÅäµÄ´æ´¢ÈİÁ¿
+    ElemType* elem = NULL; // æ•°æ®å…ƒç´ å­˜å‚¨ç©ºé—´çš„åŸºå€
+    int length;     // å½“å‰é•¿åº¦
+    int listsize;   // å½“å‰åˆ†é…çš„å­˜å‚¨å®¹é‡
 } SqList;
 
-// ÏßĞÔ±íµÄ¹ÜÀí±í¶¨Òå
+// çº¿æ€§è¡¨çš„ç®¡ç†è¡¨å®šä¹‰
 typedef struct {
     struct {
-        char name[30]; // ÏßĞÔ±íÃû³Æ
-        SqList L;      // ÏßĞÔ±í
-    } elem[10];        // ×î¶à¹ÜÀí 10 ¸öÏßĞÔ±í
-    int length;        // µ±Ç°¹ÜÀíµÄÏßĞÔ±íÊıÁ¿
+        char name[30]; // çº¿æ€§è¡¨åç§°
+        SqList L;      // çº¿æ€§è¡¨
+    } elem[10];        // æœ€å¤šç®¡ç† 10 ä¸ªçº¿æ€§è¡¨
+    int length;        // å½“å‰ç®¡ç†çš„çº¿æ€§è¡¨æ•°é‡
 } LISTS;
 
-/*---------º¯ÊıÉùÃ÷---------*/
-status InitList(SqList& L); // ³õÊ¼»¯ÏßĞÔ±í
-status DestroyList(SqList& L); // Ïú»ÙÏßĞÔ±í
-status ClearList(SqList& L); // Çå¿ÕÏßĞÔ±í
-status ListEmpty(SqList L); // ÅĞ¶ÏÏßĞÔ±íÊÇ·ñÎª¿Õ
-int ListLength(SqList L); // »ñÈ¡ÏßĞÔ±í³¤¶È
-status GetElem(SqList L, int i, ElemType& e); // »ñÈ¡ÏßĞÔ±íÖĞµÚ i ¸öÔªËØ
-status LocateElem(SqList L, ElemType e); // ²éÕÒÔªËØ e µÄÎ»ÖÃ
-status PriorElem(SqList L, ElemType cur, ElemType& pre_e); // »ñÈ¡ÔªËØµÄÇ°Çı
-status NextElem(SqList L, ElemType cur, ElemType& next_e); // »ñÈ¡ÔªËØµÄºó¼Ì
-status ListInsert(SqList& L, int i, ElemType e); // ÔÚµÚ i ¸öÎ»ÖÃ²åÈëÔªËØ
-status ListDelete(SqList& L, int i, ElemType& e); // É¾³ıµÚ i ¸öÎ»ÖÃµÄÔªËØ
-status ListTraverse(SqList L); // ±éÀúÏßĞÔ±í
-status reverseList(SqList& L); // ·­×ªÏßĞÔ±í
-status RemoveNthFromEnd(SqList& L, int n); // É¾³ıµ¹ÊıµÚ n ¸öÔªËØ
-status sortList(SqList& L); // ¶ÔÏßĞÔ±íÅÅĞò
-status SaveListToFile(SqList L, const char* filename); // ±£´æÏßĞÔ±íµ½ÎÄ¼ş
-status LoadListFromFile(SqList& L, const char* filename); // ´ÓÎÄ¼ş¼ÓÔØÏßĞÔ±í
-status AddList(LISTS& Lists, char ListName[]); // Ìí¼ÓÏßĞÔ±í
-status RemoveList(LISTS& Lists, char ListName[]); // ÒÆ³ıÏßĞÔ±í
-int LocateList(LISTS Lists, char ListName[]); // ²éÕÒÏßĞÔ±íÎ»ÖÃ
-status MaxSubArray(SqList L); // ×î´óÁ¬Ğø×ÓÊı×éºÍ
-status SubArrayNum(SqList L, int k); // ºÍÎªKµÄ×ÓÊı×é
+/*---------å‡½æ•°å£°æ˜---------*/
+status InitList(SqList& L); // åˆå§‹åŒ–çº¿æ€§è¡¨
+status DestroyList(SqList& L); // é”€æ¯çº¿æ€§è¡¨
+status ClearList(SqList& L); // æ¸…ç©ºçº¿æ€§è¡¨
+status ListEmpty(SqList L); // åˆ¤æ–­çº¿æ€§è¡¨æ˜¯å¦ä¸ºç©º
+int ListLength(SqList L); // è·å–çº¿æ€§è¡¨é•¿åº¦
+status GetElem(SqList L, int i, ElemType& e); // è·å–çº¿æ€§è¡¨ä¸­ç¬¬ i ä¸ªå…ƒç´ 
+status LocateElem(SqList L, ElemType e); // æŸ¥æ‰¾å…ƒç´  e çš„ä½ç½®
+status PriorElem(SqList L, ElemType cur, ElemType& pre_e); // è·å–å…ƒç´ çš„å‰é©±
+status NextElem(SqList L, ElemType cur, ElemType& next_e); // è·å–å…ƒç´ çš„åç»§
+status ListInsert(SqList& L, int i, ElemType e); // åœ¨ç¬¬ i ä¸ªä½ç½®æ’å…¥å…ƒç´ 
+status ListDelete(SqList& L, int i, ElemType& e); // åˆ é™¤ç¬¬ i ä¸ªä½ç½®çš„å…ƒç´ 
+status ListTraverse(SqList L); // éå†çº¿æ€§è¡¨
+status reverseList(SqList& L); // ç¿»è½¬çº¿æ€§è¡¨
+status RemoveNthFromEnd(SqList& L, int n); // åˆ é™¤å€’æ•°ç¬¬ n ä¸ªå…ƒç´ 
+status sortList(SqList& L); // å¯¹çº¿æ€§è¡¨æ’åº
+status SaveListToFile(SqList L, const char* filename); // ä¿å­˜çº¿æ€§è¡¨åˆ°æ–‡ä»¶
+status LoadListFromFile(SqList& L, const char* filename); // ä»æ–‡ä»¶åŠ è½½çº¿æ€§è¡¨
+status AddList(LISTS& Lists, char ListName[]); // æ·»åŠ çº¿æ€§è¡¨
+status RemoveList(LISTS& Lists, char ListName[]); // ç§»é™¤çº¿æ€§è¡¨
+int LocateList(LISTS Lists, char ListName[]); // æŸ¥æ‰¾çº¿æ€§è¡¨ä½ç½®
+status MaxSubArray(SqList L); // æœ€å¤§è¿ç»­å­æ•°ç»„å’Œ
+status SubArrayNum(SqList L, int k); // å’Œä¸ºKçš„å­æ•°ç»„
 
-/*---------º¯ÊıÊµÏÖ---------*/
+/*---------å‡½æ•°å®ç°---------*/
 
-// ³õÊ¼»¯ÏßĞÔ±í
+// åˆå§‹åŒ–çº¿æ€§è¡¨
 status InitList(SqList& L) {
     if (L.elem) return INFEASIBLE;
     L.elem = (ElemType*)malloc(LIST_INIT_SIZE * sizeof(ElemType));
@@ -70,7 +70,7 @@ status InitList(SqList& L) {
     return OK;
 }
 
-// Ïú»ÙÏßĞÔ±í
+// é”€æ¯çº¿æ€§è¡¨
 status DestroyList(SqList& L) {
     if (!L.elem) return INFEASIBLE;
     free(L.elem);
@@ -80,26 +80,26 @@ status DestroyList(SqList& L) {
     return OK;
 }
 
-// Çå¿ÕÏßĞÔ±í
+// æ¸…ç©ºçº¿æ€§è¡¨
 status ClearList(SqList& L) {
     if (!L.elem) return INFEASIBLE;
     L.length = 0;
     return OK;
 }
 
-// ÅĞ¶ÏÏßĞÔ±íÊÇ·ñÎª¿Õ
+// åˆ¤æ–­çº¿æ€§è¡¨æ˜¯å¦ä¸ºç©º
 status ListEmpty(SqList L) {
     if (!L.elem) return INFEASIBLE;
     return L.length == 0 ? OK : ERROR;
 }
 
-// »ñÈ¡ÏßĞÔ±í³¤¶È
+// è·å–çº¿æ€§è¡¨é•¿åº¦
 int ListLength(SqList L) {
     if (!L.elem) return INFEASIBLE;
     return L.length;
 }
 
-// »ñÈ¡ÏßĞÔ±íÖĞµÚ i ¸öÔªËØ
+// è·å–çº¿æ€§è¡¨ä¸­ç¬¬ i ä¸ªå…ƒç´ 
 status GetElem(SqList L, int i, ElemType& e) {
     if (!L.elem) return INFEASIBLE;
     if (i < 1 || i > L.length) return ERROR;
@@ -107,7 +107,7 @@ status GetElem(SqList L, int i, ElemType& e) {
     return OK;
 }
 
-// ²éÕÒÔªËØ e µÄÎ»ÖÃ
+// æŸ¥æ‰¾å…ƒç´  e çš„ä½ç½®
 status LocateElem(SqList L, ElemType e) {
     if (!L.elem) return INFEASIBLE;
     for (int i = 0; i < L.length; i++) {
@@ -116,7 +116,7 @@ status LocateElem(SqList L, ElemType e) {
     return ERROR;
 }
 
-// »ñÈ¡ÔªËØµÄÇ°Çı
+// è·å–å…ƒç´ çš„å‰é©±
 status PriorElem(SqList L, ElemType cur, ElemType& pre_e) {
     if (!L.elem) return INFEASIBLE;
     for (int i = 1; i < L.length; i++) {
@@ -128,7 +128,7 @@ status PriorElem(SqList L, ElemType cur, ElemType& pre_e) {
     return ERROR;
 }
 
-// »ñÈ¡ÔªËØµÄºó¼Ì
+// è·å–å…ƒç´ çš„åç»§
 status NextElem(SqList L, ElemType cur, ElemType& next_e) {
     if (!L.elem) return INFEASIBLE;
     for (int i = 0; i < L.length - 1; i++) {
@@ -140,7 +140,7 @@ status NextElem(SqList L, ElemType cur, ElemType& next_e) {
     return ERROR;
 }
 
-// ÔÚµÚ i ¸öÎ»ÖÃ²åÈëÔªËØ
+// åœ¨ç¬¬ i ä¸ªä½ç½®æ’å…¥å…ƒç´ 
 status ListInsert(SqList& L, int i, ElemType e) {
     if (!L.elem) return INFEASIBLE;
     if (i < 1 || i > L.length + 1) return ERROR;
@@ -158,7 +158,7 @@ status ListInsert(SqList& L, int i, ElemType e) {
     return OK;
 }
 
-// É¾³ıµÚ i ¸öÎ»ÖÃµÄÔªËØ
+// åˆ é™¤ç¬¬ i ä¸ªä½ç½®çš„å…ƒç´ 
 status ListDelete(SqList& L, int i, ElemType& e) {
     if (!L.elem) return INFEASIBLE;
     if (i < 1 || i > L.length) return ERROR;
@@ -170,7 +170,7 @@ status ListDelete(SqList& L, int i, ElemType& e) {
     return OK;
 }
 
-// ±éÀúÏßĞÔ±í
+// éå†çº¿æ€§è¡¨
 status ListTraverse(SqList L) {
     if (!L.elem) return INFEASIBLE;
     for (int i = 0; i < L.length; i++) {
@@ -180,7 +180,7 @@ status ListTraverse(SqList L) {
     return OK;
 }
 
-// ·­×ªÏßĞÔ±í
+// ç¿»è½¬çº¿æ€§è¡¨
 status reverseList(SqList& L) {
     if (!L.elem) return INFEASIBLE;
     for (int i = 0; i < L.length / 2; i++) {
@@ -191,7 +191,7 @@ status reverseList(SqList& L) {
     return OK;
 }
 
-// É¾³ıµ¹ÊıµÚ n ¸öÔªËØ
+// åˆ é™¤å€’æ•°ç¬¬ n ä¸ªå…ƒç´ 
 status RemoveNthFromEnd(SqList& L, int n) {
     if (!L.elem) return INFEASIBLE;
     if (n <= 0 || n > L.length) return ERROR;
@@ -200,14 +200,14 @@ status RemoveNthFromEnd(SqList& L, int n) {
     return ListDelete(L, index + 1, e);
 }
 
-// ¶ÔÏßĞÔ±íÅÅĞò
+// å¯¹çº¿æ€§è¡¨æ’åº
 status sortList(SqList& L) {
     if (!L.elem) return INFEASIBLE;
     std::sort(L.elem, L.elem + L.length);
     return OK;
 }
 
-// ±£´æÏßĞÔ±íµ½ÎÄ¼ş
+// ä¿å­˜çº¿æ€§è¡¨åˆ°æ–‡ä»¶
 status SaveListToFile(SqList L, const char* filename) {
     if (!L.elem) return INFEASIBLE;
     FILE* fp = fopen(filename, "wb");
@@ -218,7 +218,7 @@ status SaveListToFile(SqList L, const char* filename) {
     return OK;
 }
 
-// ´ÓÎÄ¼ş¼ÓÔØÏßĞÔ±í
+// ä»æ–‡ä»¶åŠ è½½çº¿æ€§è¡¨
 status LoadListFromFile(SqList& L, const char* filename) {
     FILE* fp = fopen(filename, "rb");
     if (!fp) return ERROR;
@@ -235,41 +235,41 @@ status LoadListFromFile(SqList& L, const char* filename) {
     return OK;
 }
 
-// Ìí¼ÓÏßĞÔ±í
+// æ·»åŠ çº¿æ€§è¡¨
 status AddList(LISTS& Lists, char ListName[]) {
-    if (Lists.length >= 10) return ERROR; // ³¬¹ı×î´óÏßĞÔ±íÊıÁ¿ÏŞÖÆ
-    strcpy(Lists.elem[Lists.length].name, ListName); // ÉèÖÃÏßĞÔ±íÃû³Æ
-    if (InitList(Lists.elem[Lists.length].L) != OK) return ERROR; // ³õÊ¼»¯ÏßĞÔ±í
-    Lists.length++; // Ôö¼ÓÏßĞÔ±íÊıÁ¿
+    if (Lists.length >= 10) return ERROR; // è¶…è¿‡æœ€å¤§çº¿æ€§è¡¨æ•°é‡é™åˆ¶
+    strcpy(Lists.elem[Lists.length].name, ListName); // è®¾ç½®çº¿æ€§è¡¨åç§°
+    if (InitList(Lists.elem[Lists.length].L) != OK) return ERROR; // åˆå§‹åŒ–çº¿æ€§è¡¨
+    Lists.length++; // å¢åŠ çº¿æ€§è¡¨æ•°é‡
     return OK;
 }
 
-// ÒÆ³ıÏßĞÔ±í
+// ç§»é™¤çº¿æ€§è¡¨
 status RemoveList(LISTS& Lists, char ListName[]) {
     for (int i = 0; i < Lists.length; i++) {
-        if (strcmp(Lists.elem[i].name, ListName) == 0) { // ÕÒµ½Æ¥ÅäµÄÏßĞÔ±í
-            DestroyList(Lists.elem[i].L); // Ïú»ÙÏßĞÔ±í
+        if (strcmp(Lists.elem[i].name, ListName) == 0) { // æ‰¾åˆ°åŒ¹é…çš„çº¿æ€§è¡¨
+            DestroyList(Lists.elem[i].L); // é”€æ¯çº¿æ€§è¡¨
             for (int j = i; j < Lists.length - 1; j++) {
-                Lists.elem[j] = Lists.elem[j + 1]; // ÒÆ¶¯ºóĞøÏßĞÔ±í
+                Lists.elem[j] = Lists.elem[j + 1]; // ç§»åŠ¨åç»­çº¿æ€§è¡¨
             }
-            Lists.length--; // ¼õÉÙÏßĞÔ±íÊıÁ¿
+            Lists.length--; // å‡å°‘çº¿æ€§è¡¨æ•°é‡
             return OK;
         }
     }
-    return ERROR; // Î´ÕÒµ½Ö¸¶¨Ãû³ÆµÄÏßĞÔ±í
+    return ERROR; // æœªæ‰¾åˆ°æŒ‡å®šåç§°çš„çº¿æ€§è¡¨
 }
 
-// ²éÕÒÏßĞÔ±íÎ»ÖÃ
+// æŸ¥æ‰¾çº¿æ€§è¡¨ä½ç½®
 int LocateList(LISTS Lists, char ListName[]) {
     for (int i = 0; i < Lists.length; i++) {
         if (strcmp(Lists.elem[i].name, ListName) == 0) {
-            return i + 1; // ·µ»ØÏßĞÔ±íµÄ 1-based Ë÷Òı
+            return i + 1; // è¿”å›çº¿æ€§è¡¨çš„ 1-based ç´¢å¼•
         }
     }
-    return 0; // Î´ÕÒµ½
+    return 0; // æœªæ‰¾åˆ°
 }
 
-// ×î´óÁ¬Ğø×ÓÊı×éºÍ
+// æœ€å¤§è¿ç»­å­æ•°ç»„å’Œ
 status MaxSubArray(SqList L) {
     if (!L.elem) return INFEASIBLE;
     int maxSum = L.elem[0], currentSum = L.elem[0];
@@ -277,16 +277,16 @@ status MaxSubArray(SqList L) {
         currentSum = std::max(L.elem[i], currentSum + L.elem[i]);
         maxSum = std::max(maxSum, currentSum);
     }
-    printf("×î´óÁ¬Ğø×ÓÊı×éºÍÎª£º%d\n", maxSum);
+    printf("æœ€å¤§è¿ç»­å­æ•°ç»„å’Œä¸ºï¼š%d\n", maxSum);
     return OK;
 }
 
-// ºÍÎªKµÄ×ÓÊı×é
+// å’Œä¸ºKçš„å­æ•°ç»„
 status SubArrayNum(SqList L, int k) {
     if (!L.elem) return INFEASIBLE;
     int count = 0, sum = 0;
     std::unordered_map<int, int> prefixSum;
-    prefixSum[0] = 1; // ³õÊ¼»¯Ç°×ººÍÎª0µÄÇé¿ö
+    prefixSum[0] = 1; // åˆå§‹åŒ–å‰ç¼€å’Œä¸º0çš„æƒ…å†µ
     for (int i = 0; i < L.length; i++) {
         sum += L.elem[i];
         if (prefixSum.find(sum - k) != prefixSum.end()) {
@@ -294,153 +294,153 @@ status SubArrayNum(SqList L, int k) {
         }
         prefixSum[sum]++;
     }
-    printf("ºÍÎª%dµÄ×ÓÊı×é¸öÊıÎª£º%d\n", k, count);
+    printf("å’Œä¸º%dçš„å­æ•°ç»„ä¸ªæ•°ä¸ºï¼š%d\n", k, count);
     return OK;
 }
 
-/*---------µ¥¸öÏßĞÔ±í²Ù×÷²Ëµ¥---------*/
-// Ìá¹©µ¥¸öÏßĞÔ±íµÄËùÓĞ²Ù×÷
+/*---------å•ä¸ªçº¿æ€§è¡¨æ“ä½œèœå•---------*/
+// æä¾›å•ä¸ªçº¿æ€§è¡¨çš„æ‰€æœ‰æ“ä½œ
 void SingleListMenu(SqList& L) {
     int op = 1;
     while (op) {
         system("cls");
         printf("\n\n");
-        printf("µ¥¸öÏßĞÔ±í²Ù×÷²Ëµ¥ \n");
+        printf("å•ä¸ªçº¿æ€§è¡¨æ“ä½œèœå• \n");
         printf("-------------------------------------------------\n");
-        printf("%-4d%-20s%-4d%s\n", 1, "³õÊ¼»¯ÏßĞÔ±í", 9, "»ñÈ¡ÔªËØºó¼Ì");
-        printf("%-4d%-20s%-4d%s\n", 2, "Ïú»ÙÏßĞÔ±í", 10, "²åÈëÔªËØ");
-        printf("%-4d%-20s%-4d%s\n", 3, "Çå¿ÕÏßĞÔ±í", 11, "É¾³ıÔªËØ");
-        printf("%-4d%-20s%-4d%s\n", 4, "ÅĞ¶ÏÏßĞÔ±íÊÇ·ñÎª¿Õ", 12, "±éÀúÏßĞÔ±í");
-        printf("%-4d%-20s%-4d%s\n", 5, "»ñÈ¡ÏßĞÔ±í³¤¶È", 13, "×î´óÁ¬Ğø×ÓÊı×éºÍ");
-        printf("%-4d%-20s%-4d%s\n", 6, "»ñÈ¡Ö¸¶¨ÔªËØ", 14, "ºÍÎªKµÄ×ÓÊı×é");
-        printf("%-4d%-20s%-4d%s\n", 7, "²éÕÒÔªËØÎ»ÖÃ", 15, "¶ÔÏßĞÔ±íÅÅĞò");
-        printf("%-4d%-20s%-4d%s\n", 8, "»ñÈ¡ÔªËØÇ°Çı", 16, "±£´æ/¼ÓÔØÏßĞÔ±í");
-        printf("%-4d%-20s\n",0,"ÍË³ö");
+        printf("%-4d%-20s%-4d%s\n", 1, "åˆå§‹åŒ–çº¿æ€§è¡¨", 9, "è·å–å…ƒç´ åç»§");
+        printf("%-4d%-20s%-4d%s\n", 2, "é”€æ¯çº¿æ€§è¡¨", 10, "æ’å…¥å…ƒç´ ");
+        printf("%-4d%-20s%-4d%s\n", 3, "æ¸…ç©ºçº¿æ€§è¡¨", 11, "åˆ é™¤å…ƒç´ ");
+        printf("%-4d%-20s%-4d%s\n", 4, "åˆ¤æ–­çº¿æ€§è¡¨æ˜¯å¦ä¸ºç©º", 12, "éå†çº¿æ€§è¡¨");
+        printf("%-4d%-20s%-4d%s\n", 5, "è·å–çº¿æ€§è¡¨é•¿åº¦", 13, "æœ€å¤§è¿ç»­å­æ•°ç»„å’Œ");
+        printf("%-4d%-20s%-4d%s\n", 6, "è·å–æŒ‡å®šå…ƒç´ ", 14, "å’Œä¸ºKçš„å­æ•°ç»„");
+        printf("%-4d%-20s%-4d%s\n", 7, "æŸ¥æ‰¾å…ƒç´ ä½ç½®", 15, "å¯¹çº¿æ€§è¡¨æ’åº");
+        printf("%-4d%-20s%-4d%s\n", 8, "è·å–å…ƒç´ å‰é©±", 16, "ä¿å­˜/åŠ è½½çº¿æ€§è¡¨");
+        printf("%-4d%-20s\n",0,"é€€å‡º");
         printf("-------------------------------------------------\n");
-        printf("    ÇëÑ¡ÔñÄãµÄ²Ù×÷[0~16]:");
+        printf("    è¯·é€‰æ‹©ä½ çš„æ“ä½œ[0~16]:");
         scanf("%d", &op);
         switch (op) {
             case 1:
-                if (InitList(L) == OK) printf("ÏßĞÔ±í´´½¨³É¹¦£¡\n");
-                else printf("ÏßĞÔ±í´´½¨Ê§°Ü£¡\n");
+                if (InitList(L) == OK) printf("çº¿æ€§è¡¨åˆ›å»ºæˆåŠŸï¼\n");
+                else printf("çº¿æ€§è¡¨åˆ›å»ºå¤±è´¥ï¼\n");
                 getchar(); getchar();
                 break;
             case 2:
-                if (DestroyList(L) == OK) printf("ÏßĞÔ±íÏú»Ù³É¹¦£¡\n");
-                else printf("ÏßĞÔ±íÏú»ÙÊ§°Ü£¡\n");
+                if (DestroyList(L) == OK) printf("çº¿æ€§è¡¨é”€æ¯æˆåŠŸï¼\n");
+                else printf("çº¿æ€§è¡¨é”€æ¯å¤±è´¥ï¼\n");
                 getchar(); getchar();
                 break;
             case 3:
-                if (ClearList(L) == OK) printf("ÏßĞÔ±íÇå¿Õ³É¹¦£¡\n");
-                else printf("ÏßĞÔ±íÇå¿ÕÊ§°Ü£¡\n");
+                if (ClearList(L) == OK) printf("çº¿æ€§è¡¨æ¸…ç©ºæˆåŠŸï¼\n");
+                else printf("çº¿æ€§è¡¨æ¸…ç©ºå¤±è´¥ï¼\n");
                 getchar(); getchar();
                 break;
             case 4:
-                if (ListEmpty(L) == OK) printf("ÏßĞÔ±íÎª¿Õ£¡\n");
-                else printf("ÏßĞÔ±í²»Îª¿Õ£¡\n");
+                if (ListEmpty(L) == OK) printf("çº¿æ€§è¡¨ä¸ºç©ºï¼\n");
+                else printf("çº¿æ€§è¡¨ä¸ä¸ºç©ºï¼\n");
                 getchar(); getchar();
                 break;
             case 5:
-                printf("ÏßĞÔ±í³¤¶ÈÎª£º%d\n", ListLength(L));
+                printf("çº¿æ€§è¡¨é•¿åº¦ä¸ºï¼š%d\n", ListLength(L));
                 getchar(); getchar();
                 break;
             case 6: {
                 int i;
                 ElemType e;
-                printf("ÇëÊäÈëÒª»ñÈ¡µÄÔªËØÎ»ÖÃ£º");
+                printf("è¯·è¾“å…¥è¦è·å–çš„å…ƒç´ ä½ç½®ï¼š");
                 scanf("%d", &i);
-                if (GetElem(L, i, e) == OK) printf("µÚ%d¸öÔªËØÎª£º%d\n", i, e);
-                else printf("»ñÈ¡ÔªËØÊ§°Ü£¡\n");
+                if (GetElem(L, i, e) == OK) printf("ç¬¬%dä¸ªå…ƒç´ ä¸ºï¼š%d\n", i, e);
+                else printf("è·å–å…ƒç´ å¤±è´¥ï¼\n");
                 getchar(); getchar();
                 break;
             }
             case 7: {
                 ElemType e;
-                printf("ÇëÊäÈëÒª²éÕÒµÄÔªËØÖµ£º");
+                printf("è¯·è¾“å…¥è¦æŸ¥æ‰¾çš„å…ƒç´ å€¼ï¼š");
                 scanf("%d", &e);
                 int pos = LocateElem(L, e);
-                if (pos != ERROR) printf("ÔªËØ%dµÄÎ»ÖÃÎª£º%d\n", e, pos);
-                else printf("Î´ÕÒµ½ÔªËØ£¡\n");
+                if (pos != ERROR) printf("å…ƒç´ %dçš„ä½ç½®ä¸ºï¼š%d\n", e, pos);
+                else printf("æœªæ‰¾åˆ°å…ƒç´ ï¼\n");
                 getchar(); getchar();
                 break;
             }
             case 8: {
                 ElemType cur, pre;
-                printf("ÇëÊäÈëµ±Ç°ÔªËØÖµ£º");
+                printf("è¯·è¾“å…¥å½“å‰å…ƒç´ å€¼ï¼š");
                 scanf("%d", &cur);
-                if (PriorElem(L, cur, pre) == OK) printf("ÔªËØ%dµÄÇ°ÇıÎª£º%d\n", cur, pre);
-                else printf("Î´ÕÒµ½Ç°Çı£¡\n");
+                if (PriorElem(L, cur, pre) == OK) printf("å…ƒç´ %dçš„å‰é©±ä¸ºï¼š%d\n", cur, pre);
+                else printf("æœªæ‰¾åˆ°å‰é©±ï¼\n");
                 getchar(); getchar();
                 break;
             }
             case 9: {
                 ElemType cur, next;
-                printf("ÇëÊäÈëµ±Ç°ÔªËØÖµ£º");
+                printf("è¯·è¾“å…¥å½“å‰å…ƒç´ å€¼ï¼š");
                 scanf("%d", &cur);
-                if (NextElem(L, cur, next) == OK) printf("ÔªËØ%dµÄºó¼ÌÎª£º%d\n", cur, next);
-                else printf("Î´ÕÒµ½ºó¼Ì£¡\n");
+                if (NextElem(L, cur, next) == OK) printf("å…ƒç´ %dçš„åç»§ä¸ºï¼š%d\n", cur, next);
+                else printf("æœªæ‰¾åˆ°åç»§ï¼\n");
                 getchar(); getchar();
                 break;
             }
             case 10: {
                 int i;
                 ElemType e;
-                printf("ÇëÊäÈë²åÈëÎ»ÖÃºÍÔªËØÖµ£º");
+                printf("è¯·è¾“å…¥æ’å…¥ä½ç½®å’Œå…ƒç´ å€¼ï¼š");
                 scanf("%d %d", &i, &e);
-                if (ListInsert(L, i, e) == OK) printf("²åÈë³É¹¦£¡\n");
-                else printf("²åÈëÊ§°Ü£¡\n");
+                if (ListInsert(L, i, e) == OK) printf("æ’å…¥æˆåŠŸï¼\n");
+                else printf("æ’å…¥å¤±è´¥ï¼\n");
                 getchar(); getchar();
                 break;
             }
             case 11: {
                 int i;
                 ElemType e;
-                printf("ÇëÊäÈëÒªÉ¾³ıµÄÔªËØÎ»ÖÃ£º");
+                printf("è¯·è¾“å…¥è¦åˆ é™¤çš„å…ƒç´ ä½ç½®ï¼š");
                 scanf("%d", &i);
-                if (ListDelete(L, i, e) == OK) printf("É¾³ı³É¹¦£¬É¾³ıµÄÔªËØÎª£º%d\n", e);
-                else printf("É¾³ıÊ§°Ü£¡\n");
+                if (ListDelete(L, i, e) == OK) printf("åˆ é™¤æˆåŠŸï¼Œåˆ é™¤çš„å…ƒç´ ä¸ºï¼š%d\n", e);
+                else printf("åˆ é™¤å¤±è´¥ï¼\n");
                 getchar(); getchar();
                 break;
             }
             case 12:
-                if (ListTraverse(L) == OK) printf("±éÀú³É¹¦£¡\n");
-                else printf("±éÀúÊ§°Ü£¡\n");
+                if (ListTraverse(L) == OK) printf("éå†æˆåŠŸï¼\n");
+                else printf("éå†å¤±è´¥ï¼\n");
                 getchar(); getchar();
                 break;
             case 13:
-                if (MaxSubArray(L) == OK) printf("²Ù×÷³É¹¦£¡\n");
-                else printf("²Ù×÷Ê§°Ü£¡\n");
+                if (MaxSubArray(L) == OK) printf("æ“ä½œæˆåŠŸï¼\n");
+                else printf("æ“ä½œå¤±è´¥ï¼\n");
                 getchar(); getchar();
                 break;
             case 14: {
                 int k;
-                printf("ÇëÊäÈëÄ¿±êºÍK£º");
+                printf("è¯·è¾“å…¥ç›®æ ‡å’ŒKï¼š");
                 scanf("%d", &k);
-                if (SubArrayNum(L, k) == OK) printf("²Ù×÷³É¹¦£¡\n");
-                else printf("²Ù×÷Ê§°Ü£¡\n");
+                if (SubArrayNum(L, k) == OK) printf("æ“ä½œæˆåŠŸï¼\n");
+                else printf("æ“ä½œå¤±è´¥ï¼\n");
                 getchar(); getchar();
                 break;
             }
             case 15:
-                if (sortList(L) == OK) printf("Á´±íÅÅĞò³É¹¦£¡\n");
-                else printf("Á´±íÅÅĞòÊ§°Ü£¡\n");
+                if (sortList(L) == OK) printf("é“¾è¡¨æ’åºæˆåŠŸï¼\n");
+                else printf("é“¾è¡¨æ’åºå¤±è´¥ï¼\n");
                 getchar(); getchar();
                 break;
             case 16: {
                 char filename[100];
-                printf("ÇëÊäÈë±£´æ»ò¼ÓÔØµÄÎÄ¼şÃû£º");
+                printf("è¯·è¾“å…¥ä¿å­˜æˆ–åŠ è½½çš„æ–‡ä»¶åï¼š");
                 scanf("%s", filename);
                 int choice;
-                printf("1. ±£´æµ½ÎÄ¼ş\n2. ´ÓÎÄ¼ş¼ÓÔØ\nÇëÑ¡Ôñ²Ù×÷£º");
+                printf("1. ä¿å­˜åˆ°æ–‡ä»¶\n2. ä»æ–‡ä»¶åŠ è½½\nè¯·é€‰æ‹©æ“ä½œï¼š");
                 scanf("%d", &choice);
                 if (choice == 1) {
-                    if (SaveListToFile(L, filename) == OK) printf("±£´æ³É¹¦£¡\n");
-                    else printf("±£´æÊ§°Ü£¡\n");
+                    if (SaveListToFile(L, filename) == OK) printf("ä¿å­˜æˆåŠŸï¼\n");
+                    else printf("ä¿å­˜å¤±è´¥ï¼\n");
                 } else if (choice == 2) {
-                    if (LoadListFromFile(L, filename) == OK) printf("¼ÓÔØ³É¹¦£¡\n");
-                    else printf("¼ÓÔØÊ§°Ü£¡\n");
+                    if (LoadListFromFile(L, filename) == OK) printf("åŠ è½½æˆåŠŸï¼\n");
+                    else printf("åŠ è½½å¤±è´¥ï¼\n");
                 } else {
-                    printf("ÎŞĞ§Ñ¡Ôñ£¡\n");
+                    printf("æ— æ•ˆé€‰æ‹©ï¼\n");
                 }
                 getchar(); getchar();
                 break;
@@ -451,39 +451,39 @@ void SingleListMenu(SqList& L) {
     }
 }
 
-/*---------Ö÷º¯Êı---------*/
-// Ìá¹©¶à¸öÏßĞÔ±íµÄ¹ÜÀí¹¦ÄÜ
+/*---------ä¸»å‡½æ•°---------*/
+// æä¾›å¤šä¸ªçº¿æ€§è¡¨çš„ç®¡ç†åŠŸèƒ½
 int main() {
     LISTS Lists;
-    Lists.length = 0; // ³õÊ¼»¯ÏßĞÔ±í¹ÜÀíÆ÷
+    Lists.length = 0; // åˆå§‹åŒ–çº¿æ€§è¡¨ç®¡ç†å™¨
     int op = 1;
 
     while (op) {
         system("cls");
         printf("\n\n");
-        printf("      ¶à¸öÏßĞÔ±í¹ÜÀí²Ëµ¥ \n");
+        printf("      å¤šä¸ªçº¿æ€§è¡¨ç®¡ç†èœå• \n");
         printf("-------------------------------------------------\n");
-        printf("1. Ìí¼ÓÏßĞÔ±í       4. ÏÔÊ¾ËùÓĞÏßĞÔ±í\n");
-        printf("2. ÒÆ³ıÏßĞÔ±í       5. ²Ù×÷µ¥¸öÏßĞÔ±í\n");
-        printf("3. ²éÕÒÏßĞÔ±í       0. ÍË³ö\n");
+        printf("1. æ·»åŠ çº¿æ€§è¡¨       4. æ˜¾ç¤ºæ‰€æœ‰çº¿æ€§è¡¨\n");
+        printf("2. ç§»é™¤çº¿æ€§è¡¨       5. æ“ä½œå•ä¸ªçº¿æ€§è¡¨\n");
+        printf("3. æŸ¥æ‰¾çº¿æ€§è¡¨       0. é€€å‡º\n");
         printf("-------------------------------------------------\n");
-        printf("    ÇëÑ¡ÔñÄãµÄ²Ù×÷[0~5]:");
+        printf("    è¯·é€‰æ‹©ä½ çš„æ“ä½œ[0~5]:");
         scanf("%d", &op);
 
         switch (op) {
             case 1: {
                 char name[30];
-                printf("ÇëÊäÈëĞÂÏßĞÔ±íµÄÃû³Æ£º");
+                printf("è¯·è¾“å…¥æ–°çº¿æ€§è¡¨çš„åç§°ï¼š");
                 scanf("%s", name);
             
-                // ¼ì²éÃû³ÆÊÇ·ñÖØ¸´
+                // æ£€æŸ¥åç§°æ˜¯å¦é‡å¤
                 if (LocateList(Lists, name) > 0) {
-                    printf("ÏßĞÔ±íÃû³Æ '%s' ÒÑ´æÔÚ£¬Ìí¼ÓÊ§°Ü£¡\n", name);
+                    printf("çº¿æ€§è¡¨åç§° '%s' å·²å­˜åœ¨ï¼Œæ·»åŠ å¤±è´¥ï¼\n", name);
                 } else {
                     if (AddList(Lists, name) == OK) {
-                        printf("ÏßĞÔ±í '%s' Ìí¼Ó³É¹¦£¡\n", name);
+                        printf("çº¿æ€§è¡¨ '%s' æ·»åŠ æˆåŠŸï¼\n", name);
                     } else {
-                        printf("ÏßĞÔ±íÌí¼ÓÊ§°Ü£¡\n");
+                        printf("çº¿æ€§è¡¨æ·»åŠ å¤±è´¥ï¼\n");
                     }
                 }
             
@@ -492,28 +492,28 @@ int main() {
             }
             case 2: {
                 char name[30];
-                printf("ÇëÊäÈëÒªÒÆ³ıµÄÏßĞÔ±íÃû³Æ£º");
+                printf("è¯·è¾“å…¥è¦ç§»é™¤çš„çº¿æ€§è¡¨åç§°ï¼š");
                 scanf("%s", name);
-                if (RemoveList(Lists, name) == OK) printf("ÏßĞÔ±í '%s' ÒÆ³ı³É¹¦£¡\n", name);
-                else printf("ÏßĞÔ±íÒÆ³ıÊ§°Ü£¡\n");
+                if (RemoveList(Lists, name) == OK) printf("çº¿æ€§è¡¨ '%s' ç§»é™¤æˆåŠŸï¼\n", name);
+                else printf("çº¿æ€§è¡¨ç§»é™¤å¤±è´¥ï¼\n");
                 getchar(); getchar();
                 break;
             }
             case 3: {
                 char name[30];
-                printf("ÇëÊäÈëÒª²éÕÒµÄÏßĞÔ±íÃû³Æ£º");
+                printf("è¯·è¾“å…¥è¦æŸ¥æ‰¾çš„çº¿æ€§è¡¨åç§°ï¼š");
                 scanf("%s", name);
                 int pos = LocateList(Lists, name);
-                if (pos > 0) printf("ÏßĞÔ±í '%s' µÄÎ»ÖÃÎª£º%d\n", name, pos);
-                else printf("Î´ÕÒµ½ÏßĞÔ±í '%s'£¡\n",name);
+                if (pos > 0) printf("çº¿æ€§è¡¨ '%s' çš„ä½ç½®ä¸ºï¼š%d\n", name, pos);
+                else printf("æœªæ‰¾åˆ°çº¿æ€§è¡¨ '%s'ï¼\n",name);
                 getchar(); getchar();
                 break;
             }
             case 4: {
                 if (Lists.length == 0) {
-                    printf("µ±Ç°Ã»ÓĞÏßĞÔ±í£¡\n");
+                    printf("å½“å‰æ²¡æœ‰çº¿æ€§è¡¨ï¼\n");
                 } else {
-                    printf("µ±Ç°ÏßĞÔ±íÁĞ±í£º\n");
+                    printf("å½“å‰çº¿æ€§è¡¨åˆ—è¡¨ï¼š\n");
                     for (int i = 0; i < Lists.length; i++) {
                         printf("  %d. %s\n", i + 1, Lists.elem[i].name);
                     }
@@ -523,14 +523,14 @@ int main() {
             }
             case 5: {
                 char name[30];
-                printf("ÇëÊäÈëÒª²Ù×÷µÄÏßĞÔ±íÃû³Æ£º");
+                printf("è¯·è¾“å…¥è¦æ“ä½œçš„çº¿æ€§è¡¨åç§°ï¼š");
                 scanf("%s", name);
                 int pos = LocateList(Lists, name);
                 if (pos > 0) {
-                    printf("ÒÑÇĞ»»µ½ÏßĞÔ±í '%s'£¡\n", name);
+                    printf("å·²åˆ‡æ¢åˆ°çº¿æ€§è¡¨ '%s'ï¼\n", name);
                     SingleListMenu(Lists.elem[pos - 1].L);
                 } else {
-                    printf("Î´ÕÒµ½ÏßĞÔ±í '%s'£¡\n",name);
+                    printf("æœªæ‰¾åˆ°çº¿æ€§è¡¨ '%s'ï¼\n",name);
                 }
                 getchar();
                 break;
@@ -539,7 +539,7 @@ int main() {
                 break;
         }
     }
-    printf("»¶Ó­ÏÂ´ÎÔÙÊ¹ÓÃ±¾ÏµÍ³£¡\n");
+    printf("æ¬¢è¿ä¸‹æ¬¡å†ä½¿ç”¨æœ¬ç³»ç»Ÿï¼\n");
     return 0;
 }
 

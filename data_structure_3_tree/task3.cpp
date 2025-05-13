@@ -3,28 +3,8 @@
 #include "string.h"
 #include <cstring>
 #include "my.h"
-
-#define TRUE 1
-#define FALSE 0
-#define OK 1
-#define ERROR 0
-#define INFEASIBLE -1
-#define OVERFLOW -2
 #define MAX_TREE_NUM 10
-
-typedef int status;
-typedef int KeyType; 
-typedef struct {
-        KeyType  key;
-        char others[20];
-} TElemType; //¶ş²æÊ÷½áµãÀàĞÍ¶¨Òå
-
-typedef struct BiTNode{  //¶ş²æÁ´±í½áµãµÄ¶¨Òå
-        TElemType  data;
-        struct BiTNode *lchild,*rchild;
-} BiTNode, *BiTree;
-
-// ========== ¸¨Öú£º²ãĞò±éÀú ==========
+// ========== è¾…åŠ©ï¼šå±‚åºéå† ==========
 typedef struct QueueNode {
     BiTree data;
     struct QueueNode* next;
@@ -69,21 +49,21 @@ status LevelOrderTraverse(BiTree T, void (*visit)(BiTree)) {
     return OK;
 }
 
-// 15. ×î´óÂ·¾¶ºÍ£¨¸ùµ½Ò¶×î´óÂ·¾¶ºÍ£©
+// 15. æœ€å¤§è·¯å¾„å’Œï¼ˆæ ¹åˆ°å¶æœ€å¤§è·¯å¾„å’Œï¼‰
 int MaxPathSum(BiTree T) {
     if (!T) return 0;
     int l = MaxPathSum(T->lchild);
     int r = MaxPathSum(T->rchild);
-    // Ò¶×Ó½Úµã
+    // å¶å­èŠ‚ç‚¹
     if (!T->lchild && !T->rchild) return T->data.key;
-    // Ö»ÓĞ×ó»òÓÒ
+    // åªæœ‰å·¦æˆ–å³
     if (!T->lchild) return r + T->data.key;
     if (!T->rchild) return l + T->data.key;
-    // Á½±ß¶¼ÓĞ
+    // ä¸¤è¾¹éƒ½æœ‰
     return (l > r ? l : r) + T->data.key;
 }
 
-// 16. ×î½ü¹«¹²×æÏÈ
+// 16. æœ€è¿‘å…¬å…±ç¥–å…ˆ
 BiTNode* LowestCommonAncestor(BiTree T, int e1, int e2) {
     if (!T) return NULL;
     if (T->data.key == e1 || T->data.key == e2) return T;
@@ -93,7 +73,7 @@ BiTNode* LowestCommonAncestor(BiTree T, int e1, int e2) {
     return left ? left : right;
 }
 
-// 17. ·­×ª¶ş²æÊ÷
+// 17. ç¿»è½¬äºŒå‰æ ‘
 void InvertTree(BiTree T) {
     if (!T) return;
     BiTree tmp = T->lchild;
@@ -103,16 +83,16 @@ void InvertTree(BiTree T) {
     InvertTree(T->rchild);
 }
 
-// ========== ¶à¶ş²æÊ÷¹ÜÀí½á¹¹Ìå ==========
+// ========== å¤šäºŒå‰æ ‘ç®¡ç†ç»“æ„ä½“ ==========
 typedef struct {
     struct {
-        char name[30]; // ¶ş²æÊ÷Ãû³Æ
-        BiTree T;      // ¶ş²æÊ÷Ö¸Õë
+        char name[30]; // äºŒå‰æ ‘åç§°
+        BiTree T;      // äºŒå‰æ ‘æŒ‡é’ˆ
     } elem[MAX_TREE_NUM];
-    int length; // µ±Ç°¹ÜÀíµÄ¶ş²æÊ÷ÊıÁ¿
+    int length; // å½“å‰ç®¡ç†çš„äºŒå‰æ ‘æ•°é‡
 } TREES;
 
-// ²éÕÒ¶ş²æÊ÷£¬·µ»ØÎ»ÖÃ£¨1¿ªÊ¼£©£¬Î´ÕÒµ½·µ»Ø0
+// æŸ¥æ‰¾äºŒå‰æ ‘ï¼Œè¿”å›ä½ç½®ï¼ˆ1å¼€å§‹ï¼‰ï¼Œæœªæ‰¾åˆ°è¿”å›0
 int LocateTree(TREES &Trees, const char name[]) {
     for (int i = 0; i < Trees.length; i++) {
         if (strcmp(Trees.elem[i].name, name) == 0)
@@ -121,7 +101,7 @@ int LocateTree(TREES &Trees, const char name[]) {
     return 0;
 }
 
-// Ìí¼Ó¶ş²æÊ÷
+// æ·»åŠ äºŒå‰æ ‘
 status AddTree(TREES &Trees, const char name[]) {
     if (Trees.length >= MAX_TREE_NUM) return ERROR;
     strcpy(Trees.elem[Trees.length].name, name);
@@ -130,7 +110,7 @@ status AddTree(TREES &Trees, const char name[]) {
     return OK;
 }
 
-// ÒÆ³ı¶ş²æÊ÷
+// ç§»é™¤äºŒå‰æ ‘
 status RemoveTree(TREES &Trees, const char name[]) {
     int pos = LocateTree(Trees, name);
     if (pos == 0) return ERROR;
@@ -142,36 +122,37 @@ status RemoveTree(TREES &Trees, const char name[]) {
     return OK;
 }
 
-// µ¥¿Ã¶ş²æÊ÷²Ù×÷²Ëµ¥
+// å•æ£µäºŒå‰æ ‘æ“ä½œèœå•
 void SingleTreeMenu(BiTree &T) {
     int op = 1;
     while (op) {
+        system("clear");
         printf("\n\n");
-        printf("      µ¥¿Ã¶ş²æÊ÷²Ù×÷²Ëµ¥\n");
+        printf("      å•æ£µäºŒå‰æ ‘æ“ä½œèœå•\n");
         printf("-------------------------------------------------\n");
-        printf(" 1. ´´½¨¶ş²æÊ÷       10. É¾³ı½áµã\n");
-        printf(" 2. Ïú»Ù¶ş²æÊ÷       11. Ç°Ğò±éÀú\n");
-        printf(" 3. Çå¿Õ¶ş²æÊ÷       12. ÖĞĞò±éÀú\n");
-        printf(" 4. ÅĞ¿Õ¶ş²æÊ÷       13. ºóĞò±éÀú\n");
-        printf(" 5. Çó¶ş²æÊ÷Éî¶È     14. ²ãĞò±éÀú\n");
-        printf(" 6. ²éÕÒ½áµã         15. ×î´óÂ·¾¶ºÍ\n");
-        printf(" 7. ½áµã¸³Öµ         17. ·­×ª¶ş²æÊ÷\n");
-        printf(" 8. »ñµÃĞÖµÜ½áµã      16. ×î½ü¹«¹²×æÏÈ\n");
-        printf(" 9. ²åÈë½áµã         18. ±£´æ/¼ÓÔØ¶ş²æÊ÷\n");
-        printf(" 0. ·µ»ØÉÏ¼¶\n");
+        printf(" 1. åˆ›å»ºäºŒå‰æ ‘       10. åˆ é™¤ç»“ç‚¹\n");
+        printf(" 2. é”€æ¯äºŒå‰æ ‘       11. å‰åºéå†\n");
+        printf(" 3. æ¸…ç©ºäºŒå‰æ ‘       12. ä¸­åºéå†\n");
+        printf(" 4. åˆ¤ç©ºäºŒå‰æ ‘       13. ååºéå†\n");
+        printf(" 5. æ±‚äºŒå‰æ ‘æ·±åº¦     14. å±‚åºéå†\n");
+        printf(" 6. æŸ¥æ‰¾ç»“ç‚¹         15. æœ€å¤§è·¯å¾„å’Œ\n");
+        printf(" 7. ç»“ç‚¹èµ‹å€¼         17. ç¿»è½¬äºŒå‰æ ‘\n");
+        printf(" 8. è·å¾—å…„å¼Ÿç»“ç‚¹      16. æœ€è¿‘å…¬å…±ç¥–å…ˆ\n");
+        printf(" 9. æ’å…¥ç»“ç‚¹         18. ä¿å­˜/åŠ è½½äºŒå‰æ ‘\n");
+        printf(" 0. è¿”å›ä¸Šçº§\n");
         printf("-------------------------------------------------\n");
-        printf("ÇëÑ¡ÔñÄãµÄ²Ù×÷[0~18]:");
+        printf("è¯·é€‰æ‹©ä½ çš„æ“ä½œ[0~18]:");
         scanf("%d", &op);
         getchar();
         switch (op) {
-            case 1: { // ´´½¨¶ş²æÊ÷
+            case 1: { // åˆ›å»ºäºŒå‰æ ‘
                 int n;
-                printf("ÇëÊäÈë½áµã¸öÊı£º");
+                printf("è¯·è¾“å…¥ç»“ç‚¹ä¸ªæ•°ï¼š");
                 scanf("%d", &n);
                 TElemType *def = (TElemType*)malloc(sizeof(TElemType) * (n*2));
-                printf("ÇëÒÀ´ÎÊäÈë%d¸ö½áµãµÄkeyºÍothers£¨keyÎª-1±íÊ¾¿Õ½áµã£©£º\n", n);
+                printf("è¯·ä¾æ¬¡è¾“å…¥%dä¸ªç»“ç‚¹çš„keyå’Œothersï¼ˆkeyä¸º-1è¡¨ç¤ºç©ºç»“ç‚¹ï¼‰ï¼š\n", n);
                 for (int i = 0; i < n; ++i) {
-                    printf("µÚ%d¸ö½áµã key: ", i+1);
+                    printf("ç¬¬%dä¸ªç»“ç‚¹ key: ", i+1);
                     scanf("%d", &def[i].key);
                     if (def[i].key == -1) strcpy(def[i].others, "");
                     else {
@@ -179,173 +160,173 @@ void SingleTreeMenu(BiTree &T) {
                         scanf("%s", def[i].others);
                     }
                 }
-                if (CreateBiTree(T, def) == OK) printf("¶ş²æÊ÷´´½¨³É¹¦£¡\n");
-                else printf("¶ş²æÊ÷´´½¨Ê§°Ü£¨ÓĞÖØ¸´key»ò¿Õ¼ä²»×ã£©£¡\n");
+                if (CreateBiTree(T, def) == OK) printf("äºŒå‰æ ‘åˆ›å»ºæˆåŠŸï¼\n");
+                else printf("äºŒå‰æ ‘åˆ›å»ºå¤±è´¥ï¼ˆæœ‰é‡å¤keyæˆ–ç©ºé—´ä¸è¶³ï¼‰ï¼\n");
                 free(def);
                 getchar();
                 break;
             }
-            case 2: { // Ïú»Ù¶ş²æÊ÷
+            case 2: { // é”€æ¯äºŒå‰æ ‘
                 if (T) {
                     DestroyBiTree(T);
                     T = NULL;
-                    printf("¶ş²æÊ÷Ïú»Ù³É¹¦£¡\n");
-                } else printf("¶ş²æÊ÷²»´æÔÚ£¡\n");
+                    printf("äºŒå‰æ ‘é”€æ¯æˆåŠŸï¼\n");
+                } else printf("äºŒå‰æ ‘ä¸å­˜åœ¨ï¼\n");
                 getchar();
                 break;
             }
-            case 3: { // Çå¿Õ¶ş²æÊ÷
+            case 3: { // æ¸…ç©ºäºŒå‰æ ‘
                 if (T) {
                     ClearBiTree(T);
-                    printf("¶ş²æÊ÷ÒÑÇå¿Õ£¡\n");
-                } else printf("¶ş²æÊ÷²»´æÔÚ£¡\n");
+                    printf("äºŒå‰æ ‘å·²æ¸…ç©ºï¼\n");
+                } else printf("äºŒå‰æ ‘ä¸å­˜åœ¨ï¼\n");
                 getchar();
                 break;
             }
-            case 4: { // ÅĞ¿Õ
-                if (!T) printf("¶ş²æÊ÷Îª¿Õ£¡\n");
-                else printf("¶ş²æÊ÷²»¿Õ£¡\n");
+            case 4: { // åˆ¤ç©º
+                if (!T) printf("äºŒå‰æ ‘ä¸ºç©ºï¼\n");
+                else printf("äºŒå‰æ ‘ä¸ç©ºï¼\n");
                 getchar();
                 break;
             }
-            case 5: { // Éî¶È
-                if (!T) printf("¶ş²æÊ÷²»´æÔÚ£¡\n");
-                else printf("¶ş²æÊ÷Éî¶ÈÎª£º%d\n", BiTreeDepth(T));
+            case 5: { // æ·±åº¦
+                if (!T) printf("äºŒå‰æ ‘ä¸å­˜åœ¨ï¼\n");
+                else printf("äºŒå‰æ ‘æ·±åº¦ä¸ºï¼š%d\n", BiTreeDepth(T));
                 getchar();
                 break;
             }
-            case 6: { // ²éÕÒ½áµã
+            case 6: { // æŸ¥æ‰¾ç»“ç‚¹
                 int key;
-                printf("ÇëÊäÈëÒª²éÕÒµÄ¹Ø¼ü×Ö£º");
+                printf("è¯·è¾“å…¥è¦æŸ¥æ‰¾çš„å…³é”®å­—ï¼š");
                 scanf("%d", &key);
                 BiTNode *p = LocateNode(T, key);
-                if (p) printf("ÕÒµ½½áµã£ºkey=%d, others=%s\n", p->data.key, p->data.others);
-                else printf("Î´ÕÒµ½¸Ã½áµã£¡\n");
+                if (p) printf("æ‰¾åˆ°ç»“ç‚¹ï¼škey=%d, others=%s\n", p->data.key, p->data.others);
+                else printf("æœªæ‰¾åˆ°è¯¥ç»“ç‚¹ï¼\n");
                 getchar();
                 break;
             }
-            case 7: { // ½áµã¸³Öµ
+            case 7: { // ç»“ç‚¹èµ‹å€¼
                 int key;
                 TElemType val;
-                printf("ÇëÊäÈëÒª¸³ÖµµÄ½áµã¹Ø¼ü×Ö£º");
+                printf("è¯·è¾“å…¥è¦èµ‹å€¼çš„ç»“ç‚¹å…³é”®å­—ï¼š");
                 scanf("%d", &key);
-                printf("ÇëÊäÈëĞÂÖµ key: ");
+                printf("è¯·è¾“å…¥æ–°å€¼ key: ");
                 scanf("%d", &val.key);
-                printf("ÇëÊäÈëĞÂÖµ others: ");
+                printf("è¯·è¾“å…¥æ–°å€¼ others: ");
                 scanf("%s", val.others);
-                if (Assign(T, key, val) == OK) printf("¸³Öµ³É¹¦£¡\n");
-                else printf("¸³ÖµÊ§°Ü£¨¹Ø¼ü×Ö³åÍ»»ò²»´æÔÚ£©£¡\n");
+                if (Assign(T, key, val) == OK) printf("èµ‹å€¼æˆåŠŸï¼\n");
+                else printf("èµ‹å€¼å¤±è´¥ï¼ˆå…³é”®å­—å†²çªæˆ–ä¸å­˜åœ¨ï¼‰ï¼\n");
                 getchar();
                 break;
             }
-            case 8: { // »ñµÃĞÖµÜ½áµã
+            case 8: { // è·å¾—å…„å¼Ÿç»“ç‚¹
                 int key;
-                printf("ÇëÊäÈëÒª²éÕÒĞÖµÜµÄ½áµã¹Ø¼ü×Ö£º");
+                printf("è¯·è¾“å…¥è¦æŸ¥æ‰¾å…„å¼Ÿçš„ç»“ç‚¹å…³é”®å­—ï¼š");
                 scanf("%d", &key);
                 BiTNode *sib = GetSibling(T, key);
-                if (sib) printf("ĞÖµÜ½áµã£ºkey=%d, others=%s\n", sib->data.key, sib->data.others);
-                else printf("ÎŞĞÖµÜ½áµã£¡\n");
+                if (sib) printf("å…„å¼Ÿç»“ç‚¹ï¼škey=%d, others=%s\n", sib->data.key, sib->data.others);
+                else printf("æ— å…„å¼Ÿç»“ç‚¹ï¼\n");
                 getchar();
                 break;
             }
-            case 9: { // ²åÈë½áµã
+            case 9: { // æ’å…¥ç»“ç‚¹
                 int e, LR;
                 TElemType val;
-                printf("ÇëÊäÈë¸¸½áµã¹Ø¼ü×Ö£¨-1±íÊ¾²åÈëÎªĞÂ¸ù£©£º");
+                printf("è¯·è¾“å…¥çˆ¶ç»“ç‚¹å…³é”®å­—ï¼ˆ-1è¡¨ç¤ºæ’å…¥ä¸ºæ–°æ ¹ï¼‰ï¼š");
                 scanf("%d", &e);
-                printf("ÇëÊäÈë²åÈë·½Ïò£¨0×ó£¬1ÓÒ£¬-1ĞÂ¸ù£©£º");
+                printf("è¯·è¾“å…¥æ’å…¥æ–¹å‘ï¼ˆ0å·¦ï¼Œ1å³ï¼Œ-1æ–°æ ¹ï¼‰ï¼š");
                 scanf("%d", &LR);
-                printf("ÇëÊäÈëĞÂ½áµã key: ");
+                printf("è¯·è¾“å…¥æ–°ç»“ç‚¹ key: ");
                 scanf("%d", &val.key);
-                printf("ÇëÊäÈëĞÂ½áµã others: ");
+                printf("è¯·è¾“å…¥æ–°ç»“ç‚¹ others: ");
                 scanf("%s", val.others);
-                if (InsertNode(T, e, LR, val) == OK) printf("²åÈë³É¹¦£¡\n");
-                else printf("²åÈëÊ§°Ü£¨¹Ø¼ü×Ö³åÍ»»ò¸¸½áµã²»´æÔÚ£©£¡\n");
+                if (InsertNode(T, e, LR, val) == OK) printf("æ’å…¥æˆåŠŸï¼\n");
+                else printf("æ’å…¥å¤±è´¥ï¼ˆå…³é”®å­—å†²çªæˆ–çˆ¶ç»“ç‚¹ä¸å­˜åœ¨ï¼‰ï¼\n");
                 getchar();
                 break;
             }
-            case 10: { // É¾³ı½áµã
+            case 10: { // åˆ é™¤ç»“ç‚¹
                 int key;
-                printf("ÇëÊäÈëÒªÉ¾³ıµÄ½áµã¹Ø¼ü×Ö£º");
+                printf("è¯·è¾“å…¥è¦åˆ é™¤çš„ç»“ç‚¹å…³é”®å­—ï¼š");
                 scanf("%d", &key);
-                printf("Î´ÊµÏÖDeleteNodeº¯Êı£¬ÇëÔÚmy.hÖĞ²¹³äÊµÏÖ£¡\n");
+                printf("æœªå®ç°DeleteNodeå‡½æ•°ï¼Œè¯·åœ¨my.hä¸­è¡¥å……å®ç°ï¼\n");
                 getchar();
                 break;
             }
-            case 11: { // Ç°Ğò±éÀú
-                printf("Ç°Ğò±éÀú£º");
+            case 11: { // å‰åºéå†
+                printf("å‰åºéå†ï¼š");
                 PreOrderTraverse(T, visit);
                 printf("\n");
                 getchar();
                 break;
             }
-            case 12: { // ÖĞĞò±éÀú
-                printf("ÖĞĞò±éÀú£º");
+            case 12: { // ä¸­åºéå†
+                printf("ä¸­åºéå†ï¼š");
                 InOrderTraverse(T, visit);
                 printf("\n");
                 getchar();
                 break;
             }
-            case 13: { // ºóĞò±éÀú
-                printf("ºóĞò±éÀú£º");
+            case 13: { // ååºéå†
+                printf("ååºéå†ï¼š");
                 PostOrderTraverse(T, visit);
                 printf("\n");
                 getchar();
                 break;
             }
-            case 14: { // ²ãĞò±éÀú
-                printf("²ãĞò±éÀú£º");
+            case 14: { // å±‚åºéå†
+                printf("å±‚åºéå†ï¼š");
                 LevelOrderTraverse(T, visit);
                 printf("\n");
                 getchar();
                 break;
             }
-            case 15: { // ×î´óÂ·¾¶ºÍ
-                if (!T) printf("¶ş²æÊ÷²»´æÔÚ£¡\n");
-                else printf("¸ùµ½Ò¶×î´óÂ·¾¶ºÍÎª£º%d\n", MaxPathSum(T));
+            case 15: { // æœ€å¤§è·¯å¾„å’Œ
+                if (!T) printf("äºŒå‰æ ‘ä¸å­˜åœ¨ï¼\n");
+                else printf("æ ¹åˆ°å¶æœ€å¤§è·¯å¾„å’Œä¸ºï¼š%d\n", MaxPathSum(T));
                 getchar();
                 break;
             }
-            case 16: { // ×î½ü¹«¹²×æÏÈ
+            case 16: { // æœ€è¿‘å…¬å…±ç¥–å…ˆ
                 int e1, e2;
-                printf("ÇëÊäÈëÁ½¸ö½áµãµÄ¹Ø¼ü×Ö£º");
+                printf("è¯·è¾“å…¥ä¸¤ä¸ªç»“ç‚¹çš„å…³é”®å­—ï¼š");
                 scanf("%d%d", &e1, &e2);
                 BiTNode* lca = LowestCommonAncestor(T, e1, e2);
                 if (lca)
-                    printf("×î½ü¹«¹²×æÏÈ£ºkey=%d, others=%s\n", lca->data.key, lca->data.others);
+                    printf("æœ€è¿‘å…¬å…±ç¥–å…ˆï¼škey=%d, others=%s\n", lca->data.key, lca->data.others);
                 else
-                    printf("Î´ÕÒµ½×î½ü¹«¹²×æÏÈ£¡\n");
+                    printf("æœªæ‰¾åˆ°æœ€è¿‘å…¬å…±ç¥–å…ˆï¼\n");
                 getchar();
                 break;
             }
-            case 17: { // ·­×ª¶ş²æÊ÷
-                if (!T) printf("¶ş²æÊ÷²»´æÔÚ£¡\n");
+            case 17: { // ç¿»è½¬äºŒå‰æ ‘
+                if (!T) printf("äºŒå‰æ ‘ä¸å­˜åœ¨ï¼\n");
                 else {
                     InvertTree(T);
-                    printf("¶ş²æÊ÷ÒÑ·­×ª£¡\n");
+                    printf("äºŒå‰æ ‘å·²ç¿»è½¬ï¼\n");
                 }
                 getchar();
                 break;
             }
-            case 18: { // ±£´æ/¼ÓÔØ¶ş²æÊ÷
+            case 18: { // ä¿å­˜/åŠ è½½äºŒå‰æ ‘
                 int subop;
                 char filename[100];
-                printf("1. ±£´æ¶ş²æÊ÷µ½ÎÄ¼ş\n2. ´ÓÎÄ¼ş¼ÓÔØ¶ş²æÊ÷\nÇëÑ¡Ôñ£º");
+                printf("1. ä¿å­˜äºŒå‰æ ‘åˆ°æ–‡ä»¶\n2. ä»æ–‡ä»¶åŠ è½½äºŒå‰æ ‘\nè¯·é€‰æ‹©ï¼š");
                 scanf("%d", &subop);
-                printf("ÇëÊäÈëÎÄ¼şÃû£º");
+                printf("è¯·è¾“å…¥æ–‡ä»¶åï¼š");
                 scanf("%s", filename);
                 if (subop == 1) {
                     if (SaveBiTree(T, filename) == OK)
-                        printf("±£´æ³É¹¦£¡\n");
+                        printf("ä¿å­˜æˆåŠŸï¼\n");
                     else
-                        printf("±£´æÊ§°Ü£¡\n");
+                        printf("ä¿å­˜å¤±è´¥ï¼\n");
                 } else if (subop == 2) {
                     if (LoadBiTree(T, filename) == OK)
-                        printf("¼ÓÔØ³É¹¦£¡\n");
+                        printf("åŠ è½½æˆåŠŸï¼\n");
                     else
-                        printf("¼ÓÔØÊ§°Ü£¡\n");
+                        printf("åŠ è½½å¤±è´¥ï¼\n");
                 } else {
-                    printf("ÎŞĞ§²Ù×÷£¡\n");
+                    printf("æ— æ•ˆæ“ä½œï¼\n");
                 }
                 getchar();
                 break;
@@ -356,34 +337,35 @@ void SingleTreeMenu(BiTree &T) {
     }
 }
 
-// ¶àÊ÷¹ÜÀíÖ÷º¯Êı
+// å¤šæ ‘ç®¡ç†ä¸»å‡½æ•°
 int main() {
     TREES Trees;
     Trees.length = 0;
     int op = 1;
     while (op) {
+        system("clear");
         printf("\n\n");
-        printf("      ¶à¸ö¶ş²æÊ÷¹ÜÀí²Ëµ¥ \n");
+        printf("      å¤šä¸ªäºŒå‰æ ‘ç®¡ç†èœå• \n");
         printf("-------------------------------------------------\n");
-        printf("1. Ìí¼Ó¶ş²æÊ÷       4. ÏÔÊ¾ËùÓĞ¶ş²æÊ÷\n");
-        printf("2. ÒÆ³ı¶ş²æÊ÷       5. ²Ù×÷µ¥¸ö¶ş²æÊ÷\n");
-        printf("3. ²éÕÒ¶ş²æÊ÷       0. ÍË³ö\n");
+        printf("1. æ·»åŠ äºŒå‰æ ‘       4. æ˜¾ç¤ºæ‰€æœ‰äºŒå‰æ ‘\n");
+        printf("2. ç§»é™¤äºŒå‰æ ‘       5. æ“ä½œå•ä¸ªäºŒå‰æ ‘\n");
+        printf("3. æŸ¥æ‰¾äºŒå‰æ ‘       0. é€€å‡º\n");
         printf("-------------------------------------------------\n");
-        printf("    ÇëÑ¡ÔñÄãµÄ²Ù×÷[0~5]:");
+        printf("    è¯·é€‰æ‹©ä½ çš„æ“ä½œ[0~5]:");
         scanf("%d", &op);
         getchar();
         switch (op) {
             case 1: {
                 char name[30];
-                printf("ÇëÊäÈëĞÂ¶ş²æÊ÷µÄÃû³Æ£º");
+                printf("è¯·è¾“å…¥æ–°äºŒå‰æ ‘çš„åç§°ï¼š");
                 scanf("%s", name);
                 if (LocateTree(Trees, name) > 0) {
-                    printf("¶ş²æÊ÷Ãû³Æ '%s' ÒÑ´æÔÚ£¬Ìí¼ÓÊ§°Ü£¡\n", name);
+                    printf("äºŒå‰æ ‘åç§° '%s' å·²å­˜åœ¨ï¼Œæ·»åŠ å¤±è´¥ï¼\n", name);
                 } else {
                     if (AddTree(Trees, name) == OK) {
-                        printf("¶ş²æÊ÷ '%s' Ìí¼Ó³É¹¦£¡\n", name);
+                        printf("äºŒå‰æ ‘ '%s' æ·»åŠ æˆåŠŸï¼\n", name);
                     } else {
-                        printf("¶ş²æÊ÷Ìí¼ÓÊ§°Ü£¡\n");
+                        printf("äºŒå‰æ ‘æ·»åŠ å¤±è´¥ï¼\n");
                     }
                 }
                 getchar();
@@ -391,28 +373,28 @@ int main() {
             }
             case 2: {
                 char name[30];
-                printf("ÇëÊäÈëÒªÒÆ³ıµÄ¶ş²æÊ÷Ãû³Æ£º");
+                printf("è¯·è¾“å…¥è¦ç§»é™¤çš„äºŒå‰æ ‘åç§°ï¼š");
                 scanf("%s", name);
-                if (RemoveTree(Trees, name) == OK) printf("¶ş²æÊ÷ '%s' ÒÆ³ı³É¹¦£¡\n", name);
-                else printf("¶ş²æÊ÷ÒÆ³ıÊ§°Ü£¡\n");
+                if (RemoveTree(Trees, name) == OK) printf("äºŒå‰æ ‘ '%s' ç§»é™¤æˆåŠŸï¼\n", name);
+                else printf("äºŒå‰æ ‘ç§»é™¤å¤±è´¥ï¼\n");
                 getchar();
                 break;
             }
             case 3: {
                 char name[30];
-                printf("ÇëÊäÈëÒª²éÕÒµÄ¶ş²æÊ÷Ãû³Æ£º");
+                printf("è¯·è¾“å…¥è¦æŸ¥æ‰¾çš„äºŒå‰æ ‘åç§°ï¼š");
                 scanf("%s", name);
                 int pos = LocateTree(Trees, name);
-                if (pos > 0) printf("¶ş²æÊ÷ '%s' µÄÎ»ÖÃÎª£º%d\n", name, pos);
-                else printf("Î´ÕÒµ½¶ş²æÊ÷ '%s'£¡\n", name);
+                if (pos > 0) printf("äºŒå‰æ ‘ '%s' çš„ä½ç½®ä¸ºï¼š%d\n", name, pos);
+                else printf("æœªæ‰¾åˆ°äºŒå‰æ ‘ '%s'ï¼\n", name);
                 getchar();
                 break;
             }
             case 4: {
                 if (Trees.length == 0) {
-                    printf("µ±Ç°Ã»ÓĞ¶ş²æÊ÷£¡\n");
+                    printf("å½“å‰æ²¡æœ‰äºŒå‰æ ‘ï¼\n");
                 } else {
-                    printf("µ±Ç°¶ş²æÊ÷ÁĞ±í£º\n");
+                    printf("å½“å‰äºŒå‰æ ‘åˆ—è¡¨ï¼š\n");
                     for (int i = 0; i < Trees.length; i++) {
                         printf("  %d. %s\n", i + 1, Trees.elem[i].name);
                     }
@@ -422,14 +404,14 @@ int main() {
             }
             case 5: {
                 char name[30];
-                printf("ÇëÊäÈëÒª²Ù×÷µÄ¶ş²æÊ÷Ãû³Æ£º");
+                printf("è¯·è¾“å…¥è¦æ“ä½œçš„äºŒå‰æ ‘åç§°ï¼š");
                 scanf("%s", name);
                 int pos = LocateTree(Trees, name);
                 if (pos > 0) {
-                    printf("ÒÑÇĞ»»µ½¶ş²æÊ÷ '%s'£¡\n", name);
+                    printf("å·²åˆ‡æ¢åˆ°äºŒå‰æ ‘ '%s'ï¼\n", name);
                     SingleTreeMenu(Trees.elem[pos - 1].T);
                 } else {
-                    printf("Î´ÕÒµ½¶ş²æÊ÷ '%s'£¡\n", name);
+                    printf("æœªæ‰¾åˆ°äºŒå‰æ ‘ '%s'ï¼\n", name);
                 }
                 getchar();
                 break;
@@ -438,6 +420,6 @@ int main() {
                 break;
         }
     }
-    printf("»¶Ó­ÏÂ´ÎÔÙÊ¹ÓÃ±¾ÏµÍ³£¡\n");
+    printf("æ¬¢è¿ä¸‹æ¬¡å†ä½¿ç”¨æœ¬ç³»ç»Ÿï¼\n");
     return 0;
 }
