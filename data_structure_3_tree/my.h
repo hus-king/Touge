@@ -112,6 +112,42 @@ status InsertNode(BiTree &T, int e, int LR, TElemType value)
     }
     return OK;
 }
+status DeleteNode(BiTree &T, KeyType e) {
+    if (T == NULL) return ERROR;
+    // 如果当前节点就是要删除的节点
+    if (T->data.key == e) {
+        BiTNode *del = T;
+        // 度为0
+        if (T->lchild == NULL && T->rchild == NULL) {
+            T = NULL;
+        }
+        // 度为1（只有右孩子）
+        else if (T->lchild == NULL) {
+            T = T->rchild;
+        }
+        // 度为1（只有左孩子）
+        else if (T->rchild == NULL) {
+            T = T->lchild;
+        }
+        // 度为2
+        else {
+            BiTNode *lc = T->lchild;
+            BiTNode *rc = T->rchild;
+            T = lc;
+            // 找到左子树最右节点
+            BiTNode *p = lc;
+            while (p->rchild) p = p->rchild;
+            p->rchild = rc;
+        }
+        free(del);
+        return OK;
+    }
+    // 在左子树递归删除
+    if (T->lchild && DeleteNode(T->lchild, e) == OK) return OK;
+    // 在右子树递归删除
+    if (T->rchild && DeleteNode(T->rchild, e) == OK) return OK;
+    return ERROR;
+}
 status PreOrderTraverse(BiTree T,void (*visit)(BiTree))
 {
     if (T)

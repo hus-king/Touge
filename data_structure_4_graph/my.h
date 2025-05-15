@@ -1,1 +1,247 @@
+status DestroyGraph(ALGraph &G){
+    int i;
+    for(i = 0; i < G.vexnum; i++) {
+        ArcNode *p = G.vertices[i].firstarc;
+        while(p) {
+            ArcNode *q = p->nextarc;
+            free(p);
+            p = q;
+        }
+        G.vertices[i].firstarc = NULL;
+    }
+    G.vexnum = 0;
+    G.arcnum = 0;
+    return OK;
+}
+status LocateVex(ALGraph G, KeyType u){
+    for(int i = 0; i < G.vexnum; i++) {
+        if(G.vertices[i].data.key == u)
+            return i;
+    }
+    return -1;
+}
+int LocateVex(ALGraph G, KeyType u){
+    for(int i = 0; i < G.vexnum; i++) {
+        if(G.vertices[i].data.key == u)
+            return i;
+    }
+    return -1;
+}
+status PutVex(ALGraph &G, int u, VertexType value)
+{
+    int i = LocateVex(G, u);
+    if (i == -1) return ERROR; // 顶点不存在
+    // 检查关键字是否重复
+    for (int j = 0; j < G.vexnum; j++) {
+        if (j != i && G.vertices[j].data.key == value.key)
+            return ERROR;
+    }
+    G.vertices[i].data = value;
+    return OK;
+}
+int LocateVex(ALGraph G, KeyType u){
+    for(int i = 0; i < G.vexnum; i++) {
+        if(G.vertices[i].data.key == u)
+            return i;
+    }
+    return -1;
+}
+int FirstAdjVex(ALGraph G, int u)
+{
+    int i = LocateVex(G, u);
+    if (i == -1) return -1; // 顶点不存在
+    ArcNode *p = G.vertices[i].firstarc;
+    if (p) return p->adjvex; // 返回第一个邻接顶点
+    return -1; // 没有邻接顶点
+}
+int NextAdjVex(ALGraph G,int v,int w)
+{
+    int i = LocateVex(G, v);
+    if (i == -1) return -1;
+    ArcNode *p = G.vertices[i].firstarc;
+    bool found = false;
+    while (p) {
+        if (found) return p->adjvex;
+        if (p->adjvex == LocateVex(G, w)){
+            found = true;
+        }
+        p = p->nextarc;
+    }
+    return -1;
+}
+status InsertVex(ALGraph &G, VertexType value)
+{
+    // 检查顶点个数是否已满
+    if (G.vexnum >= MAX_VERTEX_NUM)
+        return ERROR;
+    // 检查关键字是否重复
+    for (int j = 0; j < G.vexnum; j++) {
+        if (G.vertices[j].data.key == value.key)
+            return ERROR;
+    }
+    // 插入新顶点
+    G.vertices[G.vexnum].data = value;
+    G.vertices[G.vexnum].firstarc = NULL;
+    G.vexnum++;
+    return OK;
+}
+status DeleteVex(ALGraph &G,KeyType v){
+    // 保证图中至少有一个顶点
+    if (G.vexnum <= 1) return ERROR;
+    int i = LocateVex(G, v);
+    if (i == -1) return ERROR; // 顶点不存在
 
+    // 1. 释放自身的所有弧结点（不减arcnum）
+    ArcNode *p = G.vertices[i].firstarc;
+    while (p) {
+        ArcNode *q = p->nextarc;
+        free(p);
+        p = q;
+    }
+    G.vertices[i].firstarc = NULL;
+
+    // 2. 删除其他顶点邻接表中指向该顶点的弧，并修正adjvex
+    for (int j = 0; j < G.vexnum; j++) {
+        if (j == i) continue;
+        ArcNode *prev = NULL, *curr = G.vertices[j].firstarc;
+        while (curr) {
+            if (curr->adjvex == i) {
+                ArcNode *toDel = curr;
+                if (prev == NULL) {
+                    G.vertices[j].firstarc = curr->nextarc;
+                } else {
+                    prev->nextarc = curr->nextarc;
+                }
+                curr = curr->nextarc;
+                free(toDel);
+                G.arcnum--; // 只在这里减arcnum
+            } else {
+                // 如果指向被删顶点之后的顶点，编号要减一
+                if (curr->adjvex > i) {
+                    curr->adjvex--;
+                }
+                prev = curr;
+                curr = curr->nextarc;
+            }
+        }
+    }
+
+    // 3. 顶点数组前移
+    for (int j = i; j < G.vexnum - 1; j++) {
+        G.vertices[j] = G.vertices[j + 1];
+    }
+    G.vexnum--;
+    return OK;
+}
+status InsertArc(ALGraph &G,KeyType v,KeyType w){
+    int i,j;
+    ArcNode *p, *q;
+    for(i=0;i<G.vexnum;i++)
+        if (G.vertices[i].data.key==v) break;
+    if (i==G.vexnum) return ERROR;
+    for(j=0;j<G.vexnum;j++)
+        if (G.vertices[j].data.key==w) break;
+    if (j==G.vexnum) return ERROR;
+    for(p=G.vertices[i].firstarc;p;p=p->nextarc)
+        if (p->adjvex==j) return ERROR;
+    // v->w首插
+    p=(ArcNode*)malloc(sizeof(ArcNode));
+    p->adjvex=j; p->nextarc=G.vertices[i].firstarc; G.vertices[i].firstarc=p;
+    // w->v首插
+    q=(ArcNode*)malloc(sizeof(ArcNode));
+    q->adjvex=i; q->nextarc=G.vertices[j].firstarc; G.vertices[j].firstarc=q;
+    G.arcnum++;
+    return OK;
+}
+status DeleteArc(ALGraph &G,KeyType v,KeyType w){
+    int i, j;
+    ArcNode *p, *prev;
+    // 查找顶点v和w的下标
+    for(i=0; i<G.vexnum; i++)
+        if(G.vertices[i].data.key == v) break;
+    if(i == G.vexnum) return ERROR;
+    for(j=0; j<G.vexnum; j++)
+        if(G.vertices[j].data.key == w) break;
+    if(j == G.vexnum) return ERROR;
+
+    int found = 0;
+    // 删除v->w
+    prev = NULL;
+    p = G.vertices[i].firstarc;
+    while(p) {
+        if(p->adjvex == j) {
+            if(prev == NULL)
+                G.vertices[i].firstarc = p->nextarc;
+            else
+                prev->nextarc = p->nextarc;
+            free(p);
+            found++;
+            break;
+        }
+        prev = p;
+        p = p->nextarc;
+    }
+    // 删除w->v
+    prev = NULL;
+    p = G.vertices[j].firstarc;
+    while(p) {
+        if(p->adjvex == i) {
+            if(prev == NULL)
+                G.vertices[j].firstarc = p->nextarc;
+            else
+                prev->nextarc = p->nextarc;
+            free(p);
+            found++;
+            break;
+        }
+        prev = p;
+        p = p->nextarc;
+    }
+    if(found == 2) {
+        G.arcnum--;
+        return OK;
+    }
+    return ERROR;
+}
+void DFS(ALGraph &G, int v, int visited[], void (*visit)(VertexType)) {
+    visit(G.vertices[v].data);
+    visited[v] = 1;
+    for (ArcNode *p = G.vertices[v].firstarc; p; p = p->nextarc) {
+        if (!visited[p->adjvex]) {
+            DFS(G, p->adjvex, visited, visit);
+        }
+    }
+}
+
+status DFSTraverse(ALGraph &G, void (*visit)(VertexType)){
+    int visited[MAX_VERTEX_NUM] = {0};
+    for (int v = 0; v < G.vexnum; v++) {
+        if (!visited[v]) {
+            DFS(G, v, visited, visit);
+        }
+    }
+    return OK;
+}
+status BFSTraverse(ALGraph &G,void (*visit)(VertexType)){
+    int visited[MAX_VERTEX_NUM] = {0};
+    int queue[MAX_VERTEX_NUM], front = 0, rear = 0;
+    for (int v = 0; v < G.vexnum; v++) {
+        if (!visited[v]) {
+            // 入队并访问
+            queue[rear++] = v;
+            visited[v] = 1;
+            visit(G.vertices[v].data);
+            while (front < rear) {
+                int u = queue[front++];
+                for (ArcNode *p = G.vertices[u].firstarc; p; p = p->nextarc) {
+                    if (!visited[p->adjvex]) {
+                        queue[rear++] = p->adjvex;
+                        visited[p->adjvex] = 1;
+                        visit(G.vertices[p->adjvex].data);
+                    }
+                }
+            }
+        }
+    }
+    return OK;
+}

@@ -83,6 +83,15 @@ void InvertTree(BiTree T) {
     InvertTree(T->rchild);
 }
 
+// 19. 直观打印二叉树
+void PrintTree(BiTree T, int depth = 0, char prefix = ' ') {
+    if (!T) return;
+    PrintTree(T->rchild, depth + 1, '/');
+    for (int i = 0; i < depth; i++) printf("    ");
+    printf("%c%d(%s)\n", prefix, T->data.key, T->data.others);
+    PrintTree(T->lchild, depth + 1, '\\');
+}
+
 // ========== 多二叉树管理结构体 ==========
 typedef struct {
     struct {
@@ -91,7 +100,6 @@ typedef struct {
     } elem[MAX_TREE_NUM];
     int length; // 当前管理的二叉树数量
 } TREES;
-
 // 查找二叉树，返回位置（1开始），未找到返回0
 int LocateTree(TREES &Trees, const char name[]) {
     for (int i = 0; i < Trees.length; i++) {
@@ -137,32 +145,32 @@ void SingleTreeMenu(BiTree &T) {
         printf(" 5. 求二叉树深度     14. 层序遍历\n");
         printf(" 6. 查找结点         15. 最大路径和\n");
         printf(" 7. 结点赋值         17. 翻转二叉树\n");
-        printf(" 8. 获得兄弟结点      16. 最近公共祖先\n");
+        printf(" 8. 获得兄弟结点     16. 最近公共祖先\n");
         printf(" 9. 插入结点         18. 保存/加载二叉树\n");
-        printf(" 0. 返回上级\n");
+        printf(" 0. 返回上级         19. 直观打印二叉树\n");
         printf("-------------------------------------------------\n");
-        printf("请选择你的操作[0~18]:");
+        printf("请选择你的操作[0~19]:");
         scanf("%d", &op);
         getchar();
         switch (op) {
             case 1: { // 创建二叉树
-                int n;
-                printf("请输入结点个数：");
-                scanf("%d", &n);
-                TElemType *def = (TElemType*)malloc(sizeof(TElemType) * (n*2));
-                printf("请依次输入%d个结点的key和others（key为-1表示空结点）：\n", n);
-                for (int i = 0; i < n; ++i) {
-                    printf("第%d个结点 key: ", i+1);
-                    scanf("%d", &def[i].key);
-                    if (def[i].key == -1) strcpy(def[i].others, "");
-                    else {
-                        printf("others: ");
-                        scanf("%s", def[i].others);
-                    }
+                TElemType definition[100];
+                int i = 0;
+                printf("请一次性输入结点的key和others(以 -1 null 结束)\n");
+                while (1) {
+                    scanf("%d", &definition[i].key);
+                    scanf("%s", definition[i].others);
+                    if (definition[i].key == -1) break;
+                    i++;
                 }
-                if (CreateBiTree(T, def) == OK) printf("二叉树创建成功！\n");
-                else printf("二叉树创建失败（有重复key或空间不足）！\n");
-                free(def);
+                // 补充最后一个 -1 null
+                i++;
+                int ans = CreateBiTree(T, definition);
+                if (ans == OK) {
+                    printf("二叉树创建成功！\n");
+                } else {
+                    printf("二叉树创建失败（关键字不唯一）！\n");
+                }
                 getchar();
                 break;
             }
@@ -203,6 +211,7 @@ void SingleTreeMenu(BiTree &T) {
                 if (p) printf("找到结点：key=%d, others=%s\n", p->data.key, p->data.others);
                 else printf("未找到该结点！\n");
                 getchar();
+                getchar();
                 break;
             }
             case 7: { // 结点赋值
@@ -217,6 +226,7 @@ void SingleTreeMenu(BiTree &T) {
                 if (Assign(T, key, val) == OK) printf("赋值成功！\n");
                 else printf("赋值失败（关键字冲突或不存在）！\n");
                 getchar();
+                getchar();
                 break;
             }
             case 8: { // 获得兄弟结点
@@ -227,14 +237,15 @@ void SingleTreeMenu(BiTree &T) {
                 if (sib) printf("兄弟结点：key=%d, others=%s\n", sib->data.key, sib->data.others);
                 else printf("无兄弟结点！\n");
                 getchar();
+                getchar();
                 break;
             }
             case 9: { // 插入结点
                 int e, LR;
                 TElemType val;
-                printf("请输入父结点关键字（-1表示插入为新根）：");
+                printf("请输入父结点：");
                 scanf("%d", &e);
-                printf("请输入插入方向（0左，1右，-1新根）：");
+                printf("请输入插入方向（0左，1右）：");
                 scanf("%d", &LR);
                 printf("请输入新结点 key: ");
                 scanf("%d", &val.key);
@@ -242,15 +253,16 @@ void SingleTreeMenu(BiTree &T) {
                 scanf("%s", val.others);
                 if (InsertNode(T, e, LR, val) == OK) printf("插入成功！\n");
                 else printf("插入失败（关键字冲突或父结点不存在）！\n");
-                getchar();
+                getchar();getchar();
                 break;
             }
             case 10: { // 删除结点
                 int key;
                 printf("请输入要删除的结点关键字：");
                 scanf("%d", &key);
-                printf("未实现DeleteNode函数，请在my.h中补充实现！\n");
-                getchar();
+                if (DeleteNode(T, key) == OK) printf("删除成功！\n");
+                else printf("删除失败（结点不存在）！\n");
+                getchar();getchar();
                 break;
             }
             case 11: { // 前序遍历
@@ -297,6 +309,7 @@ void SingleTreeMenu(BiTree &T) {
                 else
                     printf("未找到最近公共祖先！\n");
                 getchar();
+                getchar();
                 break;
             }
             case 17: { // 翻转二叉树
@@ -327,6 +340,16 @@ void SingleTreeMenu(BiTree &T) {
                         printf("加载失败！\n");
                 } else {
                     printf("无效操作！\n");
+                }
+                getchar();
+                break;
+            }
+            case 19: { // 直观打印二叉树
+                if (!T) {
+                    printf("二叉树不存在！\n");
+                } else {
+                    printf("二叉树结构如下（右高左低）：\n");
+                    PrintTree(T);
                 }
                 getchar();
                 break;
