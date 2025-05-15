@@ -245,3 +245,65 @@ status BFSTraverse(ALGraph &G,void (*visit)(VertexType)){
     }
     return OK;
 }
+status SaveGraph(ALGraph G, char FileName[]) {
+    FILE *fp = fopen(FileName, "w");
+    if (!fp) return ERROR;
+
+    for (int i = 0; i < G.vexnum; i++) {
+        fprintf(fp, "%d %s\n", G.vertices[i].data.key, G.vertices[i].data.others);
+    }
+    fprintf(fp, "-1 -1\n");
+
+    for (int i = 0; i < G.vexnum; i++) {
+        ArcNode *p = G.vertices[i].firstarc;
+        while (p) {
+            if (i < p->adjvex)
+                fprintf(fp, "%d %d\n", G.vertices[i].data.key, G.vertices[p->adjvex].data.key);
+            p = p->nextarc;
+        }
+    }
+    fprintf(fp, "-1 -1\n");
+
+    fclose(fp);
+    return OK;
+}
+status LoadGraph(ALGraph &G, char FileName[]) {
+    FILE *fp = fopen(FileName, "r");
+    if (!fp) return ERROR;
+
+    int i = 0;
+    KeyType key;
+    char others[20];
+
+    while (fscanf(fp, "%d %s", &key, others) != EOF && key != -1) {
+        G.vertices[i].data.key = key;
+        strcpy(G.vertices[i].data.others, others);
+        G.vertices[i].firstarc = NULL;
+        i++;
+    }
+    G.vexnum = i;
+
+    KeyType v1, v2;
+    while (fscanf(fp, "%d %d", &v1, &v2) != EOF && v1 != -1) {
+        int one = -1, two = -1;
+        for (int j = 0; j < G.vexnum; j++) {
+            if (G.vertices[j].data.key == v1) one = j;
+            if (G.vertices[j].data.key == v2) two = j;
+        }
+
+        if (one == -1 || two == -1) continue;
+
+        ArcNode *p = (ArcNode*)malloc(sizeof(ArcNode));
+        p->adjvex = two;
+        p->nextarc = G.vertices[one].firstarc;
+        G.vertices[one].firstarc = p;
+
+        p = (ArcNode*)malloc(sizeof(ArcNode));
+        p->adjvex = one;
+        p->nextarc = G.vertices[two].firstarc;
+        G.vertices[two].firstarc = p;
+    }
+
+    fclose(fp);
+    return OK;
+}
