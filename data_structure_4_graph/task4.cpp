@@ -50,7 +50,6 @@ status RemoveGraph(GRAPHS &Graphs, const char name[]) {
 void visit(VertexType v) {
     printf("%d(%s) ", v.key, v.others);
 }
-
 // 附加功能1：距离小于k的顶点集合（BFS实现）
 void VerticesSetLessThanK(ALGraph &G, KeyType v, int k) {
     int idx = LocateVex(G, v);
@@ -162,9 +161,10 @@ void SingleGraphMenu(ALGraph &G) {
         printf(" 6. 广度优先遍历     14. 图的连通分量个数\n");
         printf(" 7. 插入顶点         15. 图的文件保存/加载\n");
         printf(" 8. 删除顶点         16. 直观打印图\n");
+        printf("17. 获得第一邻接点   18. 获得下一邻接点\n");
         printf(" 0. 返回上级\n");
         printf("-------------------------------------------------\n");
-        printf("请选择你的操作[0~16]:");
+        printf("请选择你的操作[0~18]:");
         scanf("%d", &op);
         getchar();
         switch (op) {
@@ -390,6 +390,32 @@ void SingleGraphMenu(ALGraph &G) {
             }
             case 16: { // 直观打印图
                 PrintGraph(G);
+                getchar();
+                break;
+            }
+            case 17: { // 获得第一邻接点
+                int u;
+                printf("请输入顶点关键字u：");
+                scanf("%d", &u);
+                int res = FirstAdjVex(G, u);
+                if (res != -1)
+                    printf("顶点%d的第一个邻接点关键字为：%d\n", u, G.vertices[res].data.key);
+                else
+                    printf("顶点%d没有邻接点！\n", u);
+                getchar();
+                getchar();
+                break;
+            }
+            case 18: { // 获得下一邻接点
+                int v, w;
+                printf("请输入顶点关键字v和邻接点关键字w：");
+                scanf("%d%d", &v, &w);
+                int res = NextAdjVex(G, v, w);
+                if (res != -1)
+                    printf("顶点%d相对于邻接点%d的下一个邻接点关键字为：%d\n", v, w, G.vertices[res].data.key);
+                else
+                    printf("没有下一个邻接点！\n");
+                getchar();
                 getchar();
                 break;
             }
