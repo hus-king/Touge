@@ -1,5 +1,5 @@
 #include "def.h"
-status CreateCraph(ALGraph &G, VertexType V[], KeyType VR[][2]) {
+status GreateGraph(ALGraph &G, VertexType V[], KeyType VR[][2]) {
     // 1. 统计顶点数
     int i = 0;
     while (V[i].key != -1) i++;
@@ -64,6 +64,7 @@ status CreateCraph(ALGraph &G, VertexType V[], KeyType VR[][2]) {
     G.arcnum = inputEdgeCount;
     return OK;
 }
+
 int main()
 {
 ALGraph G;
@@ -77,7 +78,7 @@ i=0;
 do {
     scanf("%d%d",&VR[i][0],&VR[i][1]);
    } while(VR[i++][0]!=-1);
-if (CreateCraph(G,V,VR)==ERROR) printf("输入数据错，无法创建");
+if (CreateGraph(G,V,VR)==ERROR) printf("输入数据错，无法创建");
 else 
     {
          if (G.arcnum!=i-1) {
